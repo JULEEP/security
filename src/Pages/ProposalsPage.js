@@ -75,9 +75,9 @@ export default function ProposalsPage() {
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
-              className="border w-full px-3 py-2 rounded-md focus:outline-none focus:ring-0 "
+              className="border w-full px-8 py-2 rounded-md focus:outline-none focus:ring-0 "
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white" />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
 
           <select className="border w-auto md:w-1/5  px-3 py-2 rounded-md focus:outline-none focus:ring-0">
