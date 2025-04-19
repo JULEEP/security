@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Route } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 
 const people = [
   { name: "Jacob Rawlings", status: "Online", message: "We’re sending up statisic's your stratic-site.", time: "Online", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
