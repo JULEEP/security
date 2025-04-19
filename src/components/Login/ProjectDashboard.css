@@ -1,0 +1,82 @@
+.dashboard {
+    height: 100vh;
+    background: #f9fafb;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    
+  }
+  
+  .dashboard-header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: -8px;
+  }
+  
+  .new-project-btn {
+    background: #2563eb;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top:-15px;
+  }
+  
+  /* .dashboard-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .search-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  select {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  } */
+   
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: 20%;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-top:-3px;
+  }
+  
+  .search-bar {
+    margin-top:-15px;
+    flex: 1;
+    padding: 10px;
+    font-size: 10px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; 
+    flex-direction: row;
+  }  
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
