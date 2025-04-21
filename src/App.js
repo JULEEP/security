@@ -1,5 +1,5 @@
 import { BrowserRouter as Router,Route,Routes } from "react-router-dom";
-import ClientsideSidebar from "./Pages/ClientsideSidebar"
+import ClientsideSidebar from "./Pages/ClientsideSidebar";
 import ProposalsPage from "./Pages/ProposalsPage";
 function App() {
   return (
