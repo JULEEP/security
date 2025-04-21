@@ -2,7 +2,7 @@ import { BrowserRouter as Router,Route,Routes } from "react-router-dom";
 import ClientsideSidebar from "./Pages/ClientsideSidebar";
 import  EmployeeSignup from   "./Pages/EmployeeSignup";
 import  EmployeeLogin  from "./Pages/EmployeeLogin";
-// import ProjectDashboard from './components/ProjectDashborad';
+import ProjectDashboard from './components/ProjectDashborad';
 import ProposalsPage from "./Pages/ProposalPage";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
       </Routes>
     </Router>
 
-// {/* <ProjectDashboard/> */}
+ <ProjectDashboard/> 
 
 );
 }
