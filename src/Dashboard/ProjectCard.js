@@ -9,25 +9,6 @@ const statusClasses = {
 
  const ProjectCard = ({ project }) =>(
 
-  // <div className="project-card">
-  //   <div>
-  //     <h3 className="project-title">{project.title}</h3>
-  //     <p className="project-client">{project.client}</p>
-  //     <span className="project-tag">{project.tag}</span>
-  //     <div className="progress-container">
-  //       <div
-  //         className="progress-bar"
-  //         style={{ width: `${project.progress}%` }}
-  //       ></div>
-  //     </div> 
-  //     <p className="project-info">
-  //       {project.progress}% completed{project.date ? ` · ${project.date}` : ''}
-  //     </p>
-  //   </div>
-  //   <span className={`project-status ${statusClasses[project.status]}`}>
-  //     {project.status}
-  //   </span>
-  // </div>
   <div className="project-box">
   <div className="project-info">
     <h3>{project.title}</h3>

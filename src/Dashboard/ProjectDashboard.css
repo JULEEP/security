@@ -29,27 +29,6 @@
     cursor: pointer;
     margin-top:-15px;
   }
-  
-  /* .dashboard-filters {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  
-  .search-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    flex: 1;
-    min-width: 200px;
-  }
-  
-  select {
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  } */
    
   .container {
     display: flex;
