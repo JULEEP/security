@@ -2,7 +2,8 @@ import { BrowserRouter as Router,Route,Routes } from "react-router-dom";
 import ClientsideSidebar from "./Pages/ClientsideSidebar";
 import  EmployeeSignup from   "./Pages/EmployeeSignup";
 import  EmployeeLogin  from "./Pages/EmployeeLogin";
-
+import AdminSignup from "./Pages/AdminSignup";
+import AdminLogin from "./Pages/AdminLogin";
 function App() {
   return (
   
@@ -11,6 +12,8 @@ function App() {
             <Route path="/ClientSidebar" element={<ClientsideSidebar/>} />
             <Route path="/EmployeeSignup" element={<EmployeeSignup/>} />
             <Route path="/EmployeeLogin" element={<EmployeeLogin/>} />
+            <Route path="/AdminSignup" element={<AdminSignup/>} />
+            <Route path="/AdminLogin" element={<AdminLogin/>} />
       </Routes>
     </Router>
   );
