@@ -1,0 +1,97 @@
+   .project-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    gap: 20px;
+  }
+  
+  .project-info h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+ 
+  .project-info p {
+    margin: 4px 0 0;
+    color: #666;
+    
+  }
+  
+  .progress-info {
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    gap: 200px;
+    flex: 1;
+    
+  }
+  
+  .project-tag {
+    background-color: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;    
+  }
+  
+  .progress-bar-container {
+    width: 150px;
+    height: 6px;
+    background-color: #e5e5e5;
+    border-radius: 4px;
+    overflow: hidden;
+    /* margin-left:300px; */
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background-color: #3b82f6; /* blue */
+    border-radius: 4px;
+  }
+  
+  .progress-text {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  
+  .status-badge .status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #065f46;
+    background-color: #a7f3d0; /* green-200 */
+  }
+  
+
+  /**/
+  
+  .project-status {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 999px;
+    font-weight: 500;
+    /* margin-right:30px; */
+  }
+  
+  .status-ongoing {
+    background-color: #bbf7d0;
+    color: #166534;
+  }
+  
+  .status-completed {
+    background-color: #fed7aa;
+    color: #c2410c;
+  }
+  
+  .status-onhold {
+    background-color: #fef08a;
+    color: #92400e;
+  }
