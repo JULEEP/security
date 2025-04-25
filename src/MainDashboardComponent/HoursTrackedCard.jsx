@@ -16,8 +16,8 @@ const hoursData = [
 
 const HoursTrackedCard = () => {
   return (
-    <div className="bg-white rounded-lg shadow-md items-center flex flex-col justify-center p-4">
-      <div className="flex flex-col items-center gap-1 text-xl mb-1">
+    <div className="bg-white rounded-lg shadow-md items-center flex flex-col justify-center p-4 h-full">
+      <div className="flex flex-col items-center gap-2 text-xl mb-1 pt--1">
         Hours Tracked Today 
         <div className="flex items-center justify-between text-sm mb-1 w-full">5.2 hrs <FiHelpCircle className="text-gray-400" /></div>
 

@@ -24,7 +24,7 @@ const MainDashboard = () => {
             <UserAvatars />
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex gap-4 w-full">
+            <div className="flex gap-4 w-full items-stretch">
               <div className="flex-1">
                 <EarningsCard />
               </div>

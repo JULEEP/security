@@ -16,7 +16,7 @@ const earningsData = [
 
 const EarningsCard = () => {
   return (
-    <div className="bg-white rounded-lg shadow-md items-center flex flex-col justify-center p-4">
+    <div className="bg-white rounded-lg shadow-md items-center flex flex-col justify-center p-4 h-full">
       <div className="text-xl mb-1">This Week's Earnings</div>
       <div className="text-2xl font-bold mb-4">$2,150.00</div>
       <div className="w-full h-24">
