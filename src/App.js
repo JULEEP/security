@@ -6,6 +6,7 @@ import ProjectDashboard from "./Dashboard/ProjectDashborad";
 import AdminSignup from "./Pages/AdminSignup";
 import AdminLogin from "./Pages/AdminLogin";
 import InvoiceDashboard from './Invoices/InvoiceDashboard';
+import MainDashboard from './Pages/MainDashboard';
 function App() {
   return (
   
@@ -18,6 +19,7 @@ function App() {
             <Route path="/AdminSignup" element={<AdminSignup/>} />
             <Route path="/AdminLogin" element={<AdminLogin/>} />
             <Route path="/InvoiceDashboard" element={< InvoiceDashboard/>} />
+            <Route path="/MainDashboard" element={<MainDashboard/>}/>
       </Routes>
     </Router>
 
