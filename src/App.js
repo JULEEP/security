@@ -5,6 +5,8 @@ import  EmployeeLogin  from "./Pages/EmployeeLogin";
 import ProjectDashboard from "./Dashboard/ProjectDashborad";
 import AdminSignup from "./Pages/AdminSignup";
 import AdminLogin from "./Pages/AdminLogin";
+import ClientDashboard from "./Pages/ClientDashboard";
+import ClientUI from "./Pages/ClientUI";
 function App() {
   return (
   
@@ -16,6 +18,8 @@ function App() {
             <Route path="/projectDashboard" element={< ProjectDashboard/>} />
             <Route path="/AdminSignup" element={<AdminSignup/>} />
             <Route path="/AdminLogin" element={<AdminLogin/>} />
+            <Route path="/ClientDashboard" element={<ClientDashboard/>} />
+            <Route path="/ClientUI" element={<ClientUI/>} />
       </Routes>
     </Router>
 
