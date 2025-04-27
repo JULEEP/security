@@ -78,7 +78,7 @@ const LoginPage = () => {
         {/* Image Section */}
         <div className="w-full md:w-1/2 flex justify-center p-4 md:p-0">
           <img
-            src="https://clipartcraft.com/images/vegetables-clipart-cartoon-2.png"
+            src="https://static.vecteezy.com/system/resources/previews/006/584/841/original/illustration-graphic-cartoon-character-of-cyber-security-vector.jpg"
             alt="vendor Login Illustration"
             className="object-cover w-full h-auto rounded-lg md:rounded-none"
           />
