@@ -11,6 +11,7 @@ import ReportsList from "./Pages/ReportsList.js";
 import SettingsPage from "./Pages/SettingsPage.js";
 import Dashboard from './Pages/Dashboard.jsx'
 import LoginPage from "./Pages/Login.js";
+import MainDashboard from "./Pages/MainDashboard.js";
 
 
 
@@ -34,7 +35,7 @@ function App() {
               <Route path="/teamlist" element={<TeamList />} />
               <Route path="/reportlist" element={<ReportsList />} />
               <Route path="/setting" element={<SettingsPage />} />
-
+              <Route path="/maindashboard" element={<MainDashboard/>}/>
 
             </Routes>
           </AdminLayout>
