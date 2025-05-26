@@ -17,6 +17,7 @@ import ClientDashboard from "./Client/ClientDashboard.js";
 import MyProjects from "./Client/MyProjects.js";
 import MyInvoiceList from "./Client/MyInvoiceList.js";
 import ClientSettings from "./Client/ClientSettings.js";
+import NewClientList from "./Pages/NewClientList.js";
 
 
 
@@ -40,7 +41,8 @@ function App() {
               <Route path="/reportlist" element={<ReportsList />} />
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/dashboard" element={<MainDashboard/>}/>
-
+              <Route path="/newclientlist" element={<NewClientList/>} />
+              
             </Routes>
           </AdminLayout>
         }
