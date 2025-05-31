@@ -42,7 +42,7 @@ function App() {
               <Route path="/invoicelist" element={<InvoiceList />} />
               <Route path="/proposallist" element={<ProposalList />} />
               <Route path="/teamlist" element={<TeamList />} />
-              <Route path="/reportslist" element={<ReportsList />} />
+              {/* <Route path="/reportslist" element={<ReportsList />} /> */}
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/dashboard" element={<MainDashboard/>}/>
               <Route path="/newclientlist" element={<NewClientList/>} />
