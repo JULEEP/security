@@ -19,9 +19,6 @@ import MyInvoiceList from "./Client/MyInvoiceList.js";
 import ClientSettings from "./Client/ClientSettings.js";
 import NewClientList from "./Pages/NewClientList.js";
 import Reports from "./Pages/Reports.js";
-// import ProjectDetailsPage from "./Pages/ProjectDetails.js";
-import ClientDetails from "./Pages/ClientDetails.js";
-import ClientInvoice from "./Pages/ClientInvoice.js";
 
 
 
@@ -42,14 +39,10 @@ function App() {
               <Route path="/invoicelist" element={<InvoiceList />} />
               <Route path="/proposallist" element={<ProposalList />} />
               <Route path="/teamlist" element={<TeamList />} />
-              {/* <Route path="/reportslist" element={<ReportsList />} /> */}
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/dashboard" element={<MainDashboard/>}/>
               <Route path="/newclientlist" element={<NewClientList/>} />
-              <Route path="/reports" element={<Reports/>}/>
-              {/* <Route path="/projectdetails" element={<ProjectDetailsPage/>}/> */}
-              {/* <Route path="/clientdetails" element={<ClientDetails/>}/> */}
-              {/* <Route path="/clientinvoice" element={<ClientInvoice/>}/> */}
+              <Route path="/reportlist" element={<Reports/>}/>
             </Routes>
           </AdminLayout>
         }
