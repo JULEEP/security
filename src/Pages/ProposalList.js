@@ -1,8 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { FaSearch, FaPlus, FaTimes,FaEye,FaEdit,FaTrash } from "react-icons/fa";
+import ProposalModal from "./Editproposal";
 
 export default function ProposalsList() {
+  const [editProposalIndex, setEditProposalIndex] = useState(null);
+  const [editProposalData, setEditProposalData] = useState(null);
   const [Search, setSearch] = useState("");
   const [proposals, setProposals] = useState([
     {
@@ -41,11 +44,11 @@ export default function ProposalsList() {
   });
   const [viewProposal, setViewProposal] = useState(null);
 
-  const handleInputChange = (e) => {
-    setNewProposal({ ...newProposal, [e.target.name]: e.target.value });
-  };
+  // const handleInputChange = (e) => {
+  //   setNewProposal({ ...newProposal, [e.target.name]: e.target.value });
+  // };
 
-  const handleAddProposal = () => {
+  const handleAddProposal = (newProposal) => {
     if (
       newProposal.proposal &&
       newProposal.client &&
@@ -53,7 +56,17 @@ export default function ProposalsList() {
       newProposal.amount &&
       newProposal.sentDate
     ) {
-      setProposals([...proposals, newProposal]);
+      if (editProposalIndex !== null) {
+        // Editing existing proposal
+        const updatedProposals = [...proposals];
+        updatedProposals[editProposalIndex] = newProposal;
+        setProposals(updatedProposals);
+        setEditProposalIndex(null);
+        setEditProposalData(null);
+      } else {
+        // Adding new proposal
+        setProposals([...proposals, newProposal]);
+      }
       setNewProposal({
         proposal: "",
         client: "",
@@ -68,6 +81,26 @@ export default function ProposalsList() {
   };
   const handleView = (Proposals) => {
     setViewProposal(Proposals);
+  };
+
+  const handleDelete = (index) => {
+    if (window.confirm("Are you sure you want to delete this proposal?")) {
+      setProposals(proposals.filter((_, i) => i !== index));
+      // if the deleted proposal is currently being viewed or edited, close those
+      if (viewProposal && proposals[index] === viewProposal) {
+        setViewProposal(null);
+      }
+      if (editProposalIndex === index) {
+        setIsModalOpen(false);
+        setEditProposalIndex(null);
+        setEditProposalData(null);
+      }
+    }
+  };
+  const handleEdit = (index) => {
+    setEditProposalIndex(index);
+    setEditProposalData(proposals[index]);
+    setIsModalOpen(true);
   };
 
   const statusColors = {
@@ -148,19 +181,19 @@ export default function ProposalsList() {
               <td className="py-3">{proposal.sentDate}</td>
               <td className="p-3 border flex gap-3">
                   <button
-                    onClick={() => handleView(proposals)}
+                    onClick={() => handleView(proposal)}
                     className="text-blue-500 hover:text-blue-700"
                   >
                     <FaEye />
                   </button>
                   <button
-                    // onClick={() => handleEdit(index)}
+                    onClick={() => handleEdit(index)}
                     className="text-green-500 hover:text-green-700"
                   >
                     <FaEdit />
                   </button>
                   <button
-                    // onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(index)}
                     className="text-red-500 hover:text-red-700"
                   >
                     <FaTrash />
@@ -172,79 +205,12 @@ export default function ProposalsList() {
       </table>
       {/* Add Proposal Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <FaTimes size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-6 text-center">
-              Add New Proposal
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="proposal"
-                placeholder="Proposal Name"
-                value={newProposal.proposal}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="client"
-                placeholder="Client Name"
-                value={newProposal.client}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="number"
-                name="amount"
-                placeholder="Amount"
-                value={newProposal.amount}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="date"
-                name="sentDate"
-                value={newProposal.sentDate}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <select
-                name="status"
-                value={newProposal.status}
-                onChange={handleInputChange}
-                className="p-3 border rounded col-span-2"
-              >
-                <option value="">Select Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Sent">Sent</option>
-                <option value="Accepted">Accepted</option>
-              </select>
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddProposal}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
+        <ProposalModal setIsModalOpen={setIsModalOpen} handleAddProposal={handleAddProposal}/>
       )}
 
+      
+      
+      
       {viewProposal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="relative max-w-4xl w-full bg-white shadow-xl rounded-xl font-inter h-[90vh] overflow-y-auto pb-8">
@@ -258,13 +224,13 @@ export default function ProposalsList() {
             <div className="flex justify-between items-start p-10">
               <div className="space-y-3">
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Website Redesign Proposal
+                  {viewProposal?.proposal}
                 </h1>
                 <button className="bg-gray-200 text-gray-800 text-sm font-medium px-2 py-1 rounded-full">
-                  Pending
+                  {viewProposal?.status}
                 </button>
                 <p className="text-sm text-gray-800">
-                  Client: Alpha Corp • April 10, 2025
+                  Client: {viewProposal?.client} • {viewProposal?.sentDate}
                 </p>
               </div>
             </div>

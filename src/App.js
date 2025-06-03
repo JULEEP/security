@@ -19,6 +19,7 @@ import MyInvoiceList from "./Client/MyInvoiceList.js";
 import ClientSettings from "./Client/ClientSettings.js";
 import NewClientList from "./Pages/NewClientList.js";
 import Reports from "./Pages/Reports.js";
+import ProposalModal from "./Pages/Editproposal.js";
 
 
 
@@ -43,6 +44,7 @@ function App() {
               <Route path="/dashboard" element={<MainDashboard/>}/>
               <Route path="/newclientlist" element={<NewClientList/>} />
               <Route path="/reportlist" element={<Reports/>}/>
+              <Route path="/proposaledit" element={<ProposalModal/>}/>
             </Routes>
           </AdminLayout>
         }
