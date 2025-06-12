@@ -2,43 +2,8 @@ import React, { useState } from "react";
 import { FaPlus, FaTimes, FaDownload, FaEye } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-const invoices = [
-  {
-    id: "INV-008",
-    project: "E-commerce Platform",
-    issue: "Mar 15, 2025",
-    due: "Apr 15, 2025",
-    status: "Paid",
-  },
-  {
-    id: "INV-007",
-    project: "Logo Design",
-    issue: "Mar 22, 2025",
-    due: "Apr 22, 2025",
-    status: "Pending",
-  },
-  {
-    id: "INV-006",
-    project: "Marketing Materials",
-    issue: "Mar 22, 2025",
-    due: "Apr 22, 2025",
-    status: "Overdue",
-  },
-  {
-    id: "INV-005",
-    project: "Website Redesign",
-    issue: "May 16, 2025",
-    due: "Apr 22, 2025",
-    status: "Paid",
-  },
-  {
-    id: "INV-004",
-    project: "Website Redesign",
-    issue: "Mar 25, 2025",
-    due: "Apr 22, 2025",
-    status: "Paid",
-  },
-];
+import InvoiceModal from "./EditInvoice";
+
 
 const statusColors = {
   Paid: "bg-green-100 text-green-700",
@@ -98,7 +63,7 @@ const InvoiceList = () => {
     setNewInvoice({ ...newInvoice, [e.target.name]: e.target.value });
   };
 
-  const handleAddInvoice = () => {
+  const handleAddInvoice = (newInvoice) => {
     if (
       newInvoice.invoiceNo &&
       newInvoice.client &&
@@ -269,77 +234,7 @@ const InvoiceList = () => {
 
       {/* Add Invoice Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <FaTimes size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-6 text-center">
-              Add New Invoice
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="invoiceNo"
-                placeholder="Invoice No"
-                value={newInvoice.invoiceNo}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="client"
-                placeholder="Client Name"
-                value={newInvoice.client}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="number"
-                name="amount"
-                placeholder="Amount"
-                value={newInvoice.amount}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="date"
-                name="date"
-                value={newInvoice.date}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <select
-                name="status"
-                value={newInvoice.status}
-                onChange={handleInputChange}
-                className="p-3 border rounded col-span-2"
-              >
-                <option value="">Select Status</option>
-                <option value="Paid">Paid</option>
-                <option value="Pending">Pending</option>
-                <option value="Overdue">Overdue</option>
-              </select>
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddInvoice}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
+        <InvoiceModal setIsModalOpen={setIsModalOpen} handleAddInvoice={handleAddInvoice}/>
       )}
 
       {isViewModalOpen && (

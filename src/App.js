@@ -13,21 +13,27 @@ import Dashboard from './Pages/Dashboard.jsx'
 import LoginPage from "./Pages/Login.js";
 import MainDashboard from "./Pages/MainDashboard.js";
 import ClientLayout from "./Layout/ClientLayout.js";
-import ClientDashboard from "./Client/ClientDashboard.js";
+import ClientDashboard1 from "./Client/ClientDashboard1.js";
 import MyProjects from "./Client/MyProjects.js";
 import MyInvoiceList from "./Client/MyInvoiceList.js";
 import ClientSettings from "./Client/ClientSettings.js";
 import NewClientList from "./Pages/NewClientList.js";
 import Reports from "./Pages/Reports.js";
 import ProposalModal from "./Pages/Editproposal.js";
+import InvoiceModal from "./Pages/EditInvoice.js";
+import InvoicePage from "./Pages/InvoicePage.js";
+import Signup from "./Client/ClientSignUp.js";
+import Login from "./Client/ClientLogin.js";
 
 
 
-function App() {
+function App() {      
   return (
     <Routes>
       {/* Login page rendered outside AdminLayout */}
       <Route path="/" element={<LoginPage />} />
+       <Route path="/client" element={<Signup />} />
+       <Route path="/client/login" element={<Login/>}/>
 
       {/* All other routes inside AdminLayout */}
       <Route
@@ -45,6 +51,8 @@ function App() {
               <Route path="/newclientlist" element={<NewClientList/>} />
               <Route path="/reportlist" element={<Reports/>}/>
               <Route path="/proposaledit" element={<ProposalModal/>}/>
+              <Route path="/editinvoice" element={<InvoiceModal/>}/>
+              <Route path="invoicepage" element={<InvoicePage/>}/>
             </Routes>
           </AdminLayout>
         }
@@ -57,7 +65,7 @@ function App() {
        element={
          <ClientLayout>
            <Routes>
-             <Route path="dashboard" element={<ClientDashboard />} />
+             <Route path="dashboard" element={<ClientDashboard1 />} />
              <Route path="myprojects" element={<MyProjects />} />
              <Route path="myinvoice" element={<MyInvoiceList />} />
              <Route path="setting" element={<ClientSettings />} />
