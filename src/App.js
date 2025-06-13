@@ -24,6 +24,8 @@ import InvoiceModal from "./Pages/EditInvoice.js";
 import InvoicePage from "./Pages/InvoicePage.js";
 import Signup from "./Client/ClientSignUp.js";
 import Login from "./Client/ClientLogin.js";
+import ChatUI from "./Pages/ChatUI.js";
+import MilestoneFlow from "./Pages/Milestone.js";
 
 
 
@@ -53,6 +55,8 @@ function App() {
               <Route path="/proposaledit" element={<ProposalModal/>}/>
               <Route path="/editinvoice" element={<InvoiceModal/>}/>
               <Route path="invoicepage" element={<InvoicePage/>}/>
+              <Route path="/chats" element={<ChatUI/>}/>
+              <Route path="/milestone" element= {<MilestoneFlow/>}/>
             </Routes>
           </AdminLayout>
         }
