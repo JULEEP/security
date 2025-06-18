@@ -26,6 +26,7 @@ import Signup from "./Client/ClientSignUp.js";
 import Login from "./Client/ClientLogin.js";
 import ChatUI from "./Pages/ChatUI.js";
 import MilestoneFlow from "./Pages/Milestone.js";
+import  Portfolio  from "./Pages/Portfolio.js";
 
 
 
@@ -57,6 +58,7 @@ function App() {
               <Route path="invoicepage" element={<InvoicePage/>}/>
               <Route path="/chats" element={<ChatUI/>}/>
               <Route path="/milestone" element= {<MilestoneFlow/>}/>
+              <Route path="/portfolio" element={<Portfolio/>}/>
             </Routes>
           </AdminLayout>
         }
