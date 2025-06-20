@@ -89,17 +89,17 @@ const profile = {
 
   const Profile = ()=>{
     return(
-        <div className="max-w-full mx-auto bg-gradient-to-br from-black to-blue-900 p-6 rounded-xl shadow-md border border-slate-800 flex justify-center">
+        <div className="max-w-full mx-auto bg-gradient-to-br from-black to-blue-900 p-6 shadow-md border border-slate-800 flex justify-center">
         <div className="flex flex-col sm:flex-row gap-10">
           {/* Profile Picture */}
           <div className="relative">
             <img
               src={profile.image}
               alt="Profile"
-              className="w-28 h-28 rounded-full object-cover border-4 border-slate-800 shadow-md"
+              className="w-36 h-36 rounded-full object-cover border-4 border-slate-800 shadow-md"
             />
             {profile.lookingForWork && (
-              <span className="absolute bottom-20 right-4 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">
+              <span className="absolute bottom-10 right-7 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">
                 Open to work
               </span>
             )}
