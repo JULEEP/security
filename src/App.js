@@ -27,6 +27,7 @@ import Login from "./Client/ClientLogin.js";
 import ChatUI from "./Pages/ChatUI.js";
 import MilestoneFlow from "./Pages/Milestone.js";
 import  Portfolio  from "./Pages/Portfolio.js";
+import RegisterPage from "./Pages/Register.js";
 
 
 
@@ -35,6 +36,7 @@ function App() {
     <Routes>
       {/* Login page rendered outside AdminLayout */}
       <Route path="/" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage/>}/>
        <Route path="/client" element={<Signup />} />
        <Route path="/client/login" element={<Login/>}/>
 
@@ -59,6 +61,7 @@ function App() {
               <Route path="/chats" element={<ChatUI/>}/>
               <Route path="/milestone" element= {<MilestoneFlow/>}/>
               <Route path="/portfolio" element={<Portfolio/>}/>
+              <Route path="/register" element={<RegisterPage/>}/>
             </Routes>
           </AdminLayout>
         }
