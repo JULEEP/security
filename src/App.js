@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import AdminLayout from "./Layout/AdminLayout.jsx";
 import ProjectList from "./Pages/ProjectList.js";
-import ClientList from "./Pages/ClientList.js";
+// import ClientList from "./Pages/ClientList.js";
 import InvoiceList from "./Pages/InvoiceList.js";
 import ProposalList from "./Pages/ProposalList.js";
 import TeamList from "./Pages/TeamList.js";

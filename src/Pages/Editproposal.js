@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
+export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
   const [editMode, setEditMode] = useState(false);
 
   const [proposalTitle, setProposalTitle] = useState("Website Redesign Proposal");
@@ -13,8 +13,8 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
     "Refresh branding elements and color scheme",
     "Improve site navigation and user experience",
   ]);
-  const [startDate, setStartDate] = useState("Apr 15, 2025");
-  const [endDate, setEndDate] = useState("Jun 30, 2025");
+  const [startDate, setStartDate] = useState("2025-06-01");
+  const [endDate, setEndDate] = useState("2025-06-30");
   const [total, setTotal] = useState("3750.00");
   const [clientName, setClientName] = useState("Sarah Johnson");
   const [clientCompany, setClientCompany] = useState("Alpha Corp");
@@ -39,31 +39,75 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
 
   const handleSave = () => {
     setEditMode(false);
-    // Optional: Save to backend
   };
 
-  const handleSend = () => {
-  const proposalData = {
-    proposal: proposalTitle,
-    client: clientCompany,  // or clientName if you prefer
-    status: proposalStatus,
-    amount: total,
-    sentDate: startDate,    // or whichever date fits "sentDate"
-    
+  const handleSend = async () => {
+    const freelancerId = localStorage.getItem("freelancerId");
+    const clientId = "685c20032d28e90c1b96b292"; // replace with dynamic ID if needed
+
+    if (!freelancerId) {
+      alert("Freelancer ID not found. Please login again.");
+      return;
+    }
+
+    const payload = {
+      clientId,
+      title: proposalTitle,
+      client: {
+        name: clientName,
+        company: clientCompany,
+        email: clientEmail,
+        phone: clientPhone,
+        date: "2025-04-10",
+      },
+      overview,
+      scopeOfWork,
+      timeline: {
+        start: startDate,
+        end: endDate,
+      },
+      total: parseFloat(total),
+      termsAndConditions: terms,
+    };
+
+    try {
+      const response = await fetch(
+        `https://new-securebackend.onrender.com/api/freelancers/create-proposals/${freelancerId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('Error:', error);
+        alert("Proposal sending failed.");
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Proposal sent:', data);
+      alert("Proposal sent successfully!");
+      handleAddProposal(payload);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Something went wrong!");
+    }
   };
-
-  handleAddProposal(proposalData);
-};
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative max-w-4xl w-full bg-white shadow-xl rounded-xl font-inter h-[90vh] overflow-y-auto pb-8">
         <button
-          onClick={() => setIsModalOpen(null)}
-          className="absolute right-2 top-0 text-gray-600 hover:text-black text-2xl z-50 mr-2"
+          onClick={() => setIsModalOpen(false)}
+          className="absolute right-2 top-2 text-gray-600 hover:text-black text-2xl z-50 mr-2"
         >
-          x
+          ×
         </button>
 
         {/* Header */}
@@ -78,7 +122,6 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
             ) : (
               <h1 className="text-3xl font-bold text-gray-900">{proposalTitle}</h1>
             )}
-
             {editMode ? (
               <input
                 value={proposalStatus}
@@ -86,17 +129,17 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
                 className="bg-gray-200 text-gray-800 text-sm font-medium px-2 py-1 rounded-full"
               />
             ) : (
-              <button className="bg-gray-200 text-gray-800 text-sm font-medium px-2 py-1 rounded-full">
+              <span className="bg-gray-200 text-gray-800 text-sm font-medium px-2 py-1 rounded-full">
                 {proposalStatus}
-              </button>
+              </span>
             )}
             <p className="text-sm text-gray-800">Client: {clientCompany} • April 10, 2025</p>
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Edit Actions */}
         <div className="flex gap-3 border-y border-gray-200 py-3 px-6 font-semibold">
-          <button className="px-4 py-2 text-lg text-gray-800">Client Information</button>
+          <button className="px-4 py-2 text-lg text-gray-800">Client Info</button>
           <button onClick={() => setEditMode(!editMode)} className="px-4 py-2 text-lg text-gray-800">
             {editMode ? "Cancel" : "Edit"}
           </button>
@@ -105,18 +148,17 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
               Save
             </button>
           )}
-          <button className="px-4 py-2 text-lg text-gray-800">Download PDF</button>
-          <button className="px-4 py-2 text-gray-800 rounded-md text-lg">Send to Client</button>
         </div>
 
         <div className="flex justify-between px-10">
-          {/* Left Column */}
+          {/* Left */}
           <div className="space-y-6 border-r border-gray-200 pr-8 w-[50%] pt-6">
+            {/* Client Details */}
             <div className="items-center space-y-3">
               <div className="flex items-center">
                 <img
                   src="https://i.pravatar.cc/40?img=40"
-                  alt="Sarah Johnson"
+                  alt="Client Avatar"
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div className="px-4 space-y-1">
@@ -199,12 +241,13 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
             </div>
           </div>
 
-          {/* Right Column */}
+          {/* Right */}
           <div className="space-y-4 pl-10 w-[50%] pt-6">
+            {/* Timeline */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Timeline</h2>
               <div className="flex justify-between">
-                <p className="text-sm text-gray-700">Start Date:</p>
+                <span className="text-sm text-gray-700">Start Date:</span>
                 {editMode ? (
                   <input
                     value={startDate}
@@ -216,7 +259,7 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
                 )}
               </div>
               <div className="flex justify-between">
-                <p className="text-sm text-gray-700">End Date:</p>
+                <span className="text-sm text-gray-700">End Date:</span>
                 {editMode ? (
                   <input
                     value={endDate}
@@ -229,6 +272,7 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
               </div>
             </div>
 
+            {/* Total */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Total</h2>
               {editMode ? (
@@ -242,6 +286,7 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
               )}
             </div>
 
+            {/* Terms */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Terms & Conditions</h2>
               <ul className="list-disc text-sm text-gray-700 space-y-1 ml-4">
@@ -263,94 +308,22 @@ export default function ProposalModal({ setIsModalOpen,handleAddProposal }) {
           </div>
         </div>
 
-        {/* Footer Buttons */}
+        {/* Footer */}
         <div className="mt-8 flex justify-center gap-4">
-          <button className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+          <button
             onClick={handleSend}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
           >
-            Sent
+            Send
           </button>
-          <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100">
-            Request Changes
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100"
+          >
+            Cancel
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-
-
-{/* <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <FaTimes size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-6 text-center">
-              Add New Proposal
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="proposal"
-                placeholder="Proposal Name"
-                value={newProposal.proposal}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="client"
-                placeholder="Client Name"
-                value={newProposal.client}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="number"
-                name="amount"
-                placeholder="Amount"
-                value={newProposal.amount}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="date"
-                name="sentDate"
-                value={newProposal.sentDate}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <select
-                name="status"
-                value={newProposal.status}
-                onChange={handleInputChange}
-                className="p-3 border rounded col-span-2"
-              >
-                <option value="">Select Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Sent">Sent</option>
-                <option value="Accepted">Accepted</option>
-              </select>
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddProposal}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div> */}

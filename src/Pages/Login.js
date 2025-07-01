@@ -20,22 +20,26 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://new-securebackend.onrender.com/api/freelancers/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await fetch(
+        "https://new-securebackend.onrender.com/api/freelancers/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      if (response.ok) {
+        localStorage.setItem("freelancerId", data.freelancer._id);
 
-      // Optional: Store token or user data
-      localStorage.setItem("authToken", data.token);
+        localStorage.setItem("token", data.token);
+      } else {
+        alert("Login failed");
+      }
 
       // Redirect to dashboard
       navigate("/dashboard");
@@ -66,7 +70,10 @@ const LoginPage = () => {
           )}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="email"
+              >
                 Email Address
               </label>
               <input
@@ -79,7 +86,10 @@ const LoginPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700" htmlFor="password">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="password"
+              >
                 Password
               </label>
               <input

@@ -84,42 +84,36 @@ const NewClientList = () => {
     },
   ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newClient, setNewClient] = useState({
-    name: "",
-    company: "",
-    email: "",
-    status: "",
-    projects: "",
-    avatar: "",
-  });
-  const [viewClient, setViewClient] = useState(null);
-  const handleInputChange = (e) => {
-    setNewClient({ ...newClient, [e.target.name]: e.target.value });
-  };
+  const [newClient, setNewClient] = useState([]);
+  const [listClient, setNewClientList] = useState([]);
 
-  const handleAddClient = () => {
-    if (Object.values(newClient).every((field) => field !== "")) {
-      setClients([...clients, newClient]);
-      setNewClient({
-        name: "",
-        company: "",
-        email: "",
-        status: "",
-        projects: "",
-        avatar: "",
-      });
-      setIsModalOpen(false);
-    } else {
-      alert("Please fill all fields!");
+  const fetchClients = async () => {
+    try {
+      const response = await fetch(
+        "https://new-securebackend.onrender.com/api/client/getallclients"
+      );
+      const result = await response.json();
+
+      const normalizedClients = result.clients.map((client) => ({
+        name: client.name || "",
+        company: client.company || "",
+        email: client.email || "",
+        projects: client.myProjects?.length || 0,
+        budget: client.budget || "",
+        status: client.status || "",
+        tags: client.tags || "",
+        totalProjects: client.totalProjects || "",
+        totalAmount: client.totalAmount || "",
+      }));
+
+      setNewClientList(normalizedClients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      alert("Failed to load clients.");
     }
   };
-  const handleEdit = (index) => {
-    const clientToEdit = clients[index];
-    setNewClient(clientToEdit);
-    setClients(clients.filter((_, i) => i !== index));
-    setIsModalOpen(true);
-  };
 
+  const [viewClient, setViewClient] = useState(null);
   const handleView = (client) => {
     setViewClient(client);
   };
@@ -224,118 +218,71 @@ const NewClientList = () => {
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[600px] relative">
+          <div className="bg-white p-6 rounded-xl shadow-2xl w-[90%] max-w-6xl h-[90%] overflow-y-auto relative">
             <button
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
               onClick={() => setIsModalOpen(false)}
             >
               <FaTimes size={20} />
             </button>
-            <h2 className="text-xl font-bold mb-6 text-center">
-              Add / Edit Client
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              All Clients (from API)
             </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={newClient.name}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={newClient.email}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="tel"
-                name="mobile"
-                placeholder="Mobile Number"
-                value={newClient.mobile}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={newClient.password}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="companyName"
-                placeholder="Company Name"
-                value={newClient.companyName}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="url"
-                name="profileImage"
-                placeholder="Profile Image URL"
-                value={newClient.profileImage}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={newClient.address}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <textarea
-                name="bio"
-                placeholder="Short Bio"
-                value={newClient.bio}
-                onChange={handleInputChange}
-                className="p-3 border rounded h-24"
-              ></textarea>
 
-              <div className="flex items-center col-span-2">
-                <input
-                  type="checkbox"
-                  name="agreedToTerms"
-                  checked={newClient.agreedToTerms || false}
-                  onChange={(e) =>
-                    setNewClient({
-                      ...newClient,
-                      agreedToTerms: e.target.checked,
-                    })
-                  }
-                  className="mr-2"
-                />
-                <label htmlFor="agreedToTerms">
-                  I agree to the terms and conditions
-                </label>
-              </div>
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={fetchClients}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+              >
+                Fetch All Clients
+              </button>
             </div>
 
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddClient}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Save
-              </button>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border">
+                <thead className="bg-gray-200">
+                  <tr>
+                    <th className="p-3 border">Client Name</th>
+                    <th className="p-3 border">Company</th>
+                    <th className="p-3 border">Email</th>
+                    <th className="p-3 border">Projects</th>
+                    <th className="p-3 border">Budget</th>
+                    <th className="p-3 border">Status</th>
+                    <th className="p-3 border">Tags</th>
+                    <th className="p-3 border">Total Projects</th>
+                    <th className="p-3 border">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listClient.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="text-center p-4">
+                        No clients found. Click "Fetch All Clients" to load
+                        data.
+                      </td>
+                    </tr>
+                  ) : (
+                    listClient.map((client, index) => (
+                      <tr key={index} className="hover:bg-gray-50 border-b">
+                        <td className="p-3 border">{client.name}</td>
+                        <td className="p-3 border">{client.company}</td>
+                        <td className="p-3 border">{client.email}</td>
+                        <td className="p-3 border">{client.projects}</td>
+                        <td className="p-3 border">${client.budget}</td>
+                        <td className="p-3 border">{client.status}</td>
+                        <td className="p-3 border">{client.tags}</td>
+                        <td className="p-3 border">{client.totalProjects}</td>
+                        <td className="p-3 border">${client.totalAmount}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       )}
+
       {viewClient && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className=" flex relative max-w-4xl w-full bg-white shadow-xl rounded-xl font-inter h-[90vh] overflow-y-auto">
