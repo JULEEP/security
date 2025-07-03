@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
+export default function ProposalModal({
+  setIsModalOpen,
+  handleAddProposal,
+  client,
+  clientId,
+}) {
   const [editMode, setEditMode] = useState(false);
 
   const [proposalTitle, setProposalTitle] = useState("Website Redesign Proposal");
@@ -16,14 +21,24 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
   const [startDate, setStartDate] = useState("2025-06-01");
   const [endDate, setEndDate] = useState("2025-06-30");
   const [total, setTotal] = useState("3750.00");
-  const [clientName, setClientName] = useState("Sarah Johnson");
-  const [clientCompany, setClientCompany] = useState("Alpha Corp");
-  const [clientEmail, setClientEmail] = useState("sjohnson@example.com");
-  const [clientPhone, setClientPhone] = useState("(123) 456-7890");
+  const [clientName, setClientName] = useState("");
+  const [clientCompany, setClientCompany] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
   const [terms, setTerms] = useState([
     "A 50% deposit is required to begin work",
     "The remaining balance is due upon project completion",
   ]);
+
+  // Populate client info when modal opens
+  useEffect(() => {
+    if (client) {
+      setClientName(client.name || "");
+      setClientCompany(client.company || "");
+      setClientEmail(client.email || "");
+      setClientPhone(client.phone || "");
+    }
+  }, [client]);
 
   const handleScopeChange = (value, index) => {
     const updated = [...scopeOfWork];
@@ -43,10 +58,24 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
 
   const handleSend = async () => {
     const freelancerId = localStorage.getItem("freelancerId");
-    const clientId = "685c20032d28e90c1b96b292"; // replace with dynamic ID if needed
 
-    if (!freelancerId) {
-      alert("Freelancer ID not found. Please login again.");
+    if (
+      !freelancerId ||
+      !clientId ||
+      !proposalTitle.trim() ||
+      !proposalStatus.trim() ||
+      !overview.trim() ||
+      scopeOfWork.length === 0 ||
+      !startDate.trim() ||
+      !endDate.trim() ||
+      !total.trim() ||
+      !clientName.trim() ||
+      !clientCompany.trim() ||
+      !clientEmail.trim() ||
+      !clientPhone.trim() ||
+      terms.length === 0
+    ) {
+      alert("All fields are required.");
       return;
     }
 
@@ -58,7 +87,7 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
         company: clientCompany,
         email: clientEmail,
         phone: clientPhone,
-        date: "2025-04-10",
+        date: new Date().toISOString().split("T")[0], // e.g., "2025-07-03"
       },
       overview,
       scopeOfWork,
@@ -74,23 +103,21 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
       const response = await fetch(
         `https://new-securebackend.onrender.com/api/freelancers/create-proposals/${freelancerId}`,
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );
 
       if (!response.ok) {
         const error = await response.json();
-        console.error('Error:', error);
+        console.error("Error:", error);
         alert("Proposal sending failed.");
         return;
       }
 
       const data = await response.json();
-      console.log('Proposal sent:', data);
+      console.log("Proposal sent:", data);
       alert("Proposal sent successfully!");
       handleAddProposal(payload);
       setIsModalOpen(false);
@@ -133,7 +160,7 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
                 {proposalStatus}
               </span>
             )}
-            <p className="text-sm text-gray-800">Client: {clientCompany} • April 10, 2025</p>
+            <p className="text-sm text-gray-800">Client: {clientCompany}</p>
           </div>
         </div>
 
@@ -151,14 +178,14 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
         </div>
 
         <div className="flex justify-between px-10">
-          {/* Left */}
+          {/* Left Section */}
           <div className="space-y-6 border-r border-gray-200 pr-8 w-[50%] pt-6">
-            {/* Client Details */}
+            {/* Client Info */}
             <div className="items-center space-y-3">
               <div className="flex items-center">
                 <img
                   src="https://i.pravatar.cc/40?img=40"
-                  alt="Client Avatar"
+                  alt="Client"
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div className="px-4 space-y-1">
@@ -241,7 +268,7 @@ export default function ProposalModal({ setIsModalOpen, handleAddProposal }) {
             </div>
           </div>
 
-          {/* Right */}
+          {/* Right Section */}
           <div className="space-y-4 pl-10 w-[50%] pt-6">
             {/* Timeline */}
             <div>

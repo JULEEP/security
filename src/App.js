@@ -28,6 +28,7 @@ import ChatUI from "./Pages/ChatUI.js";
 import MilestoneFlow from "./Pages/Milestone.js";
 import  Portfolio  from "./Pages/Portfolio.js";
 import RegisterPage from "./Pages/Register.js";
+import ClientProposals from "./Client/ClientProposals.js";
 
 
 
@@ -78,6 +79,7 @@ function App() {
              <Route path="myprojects" element={<MyProjects />} />
              <Route path="myinvoice" element={<MyInvoiceList />} />
              <Route path="setting" element={<ClientSettings />} />
+             <Route path="proposallist" element={<ClientProposals/>}/>
            </Routes>
          </ClientLayout>
        }

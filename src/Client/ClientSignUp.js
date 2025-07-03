@@ -7,6 +7,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    mobile:"",
     password: "",
     confirmPassword: "",
   });
@@ -39,13 +40,16 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://new-securebackend.onrender.com/api/client/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://new-securebackend.onrender.com/api/client/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Registration Failed");
@@ -98,6 +102,17 @@ const Signup = () => {
               className="w-full outline-none"
             />
           </div>
+          <div className="flex items-center border border-gray-300 rounded-xl px-4 py-2 focus-within:ring-2 focus-within:ring-black">
+            <FaUser className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              placeholder="Mobile Number"
+              className="w-full outline-none"
+            />
+          </div>
 
           <div className="flex items-center border border-gray-300 rounded-xl px-4 py-2 focus-within:ring-2 focus-within:ring-black">
             <FaLock className="text-gray-500 mr-2" />
@@ -106,6 +121,7 @@ const Signup = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              placeholder="password"
               className="w-full outline-none"
             />
           </div>

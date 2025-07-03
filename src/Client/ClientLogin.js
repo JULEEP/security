@@ -51,6 +51,7 @@ const Login = () => {
 
       
       localStorage.setItem("token", data.token);
+      localStorage.setItem("clientId",data.client._id);
 
       navigate("/client/dashboard"); 
     } catch (err) {
