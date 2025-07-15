@@ -44,7 +44,7 @@ export default function ClientList({ setIsClientModalOpen, handleAddProposal }) 
               >
                 <div>
                   <p className="font-semibold text-lg">{client.name}</p>
-                  <p className="text-sm text-gray-600">{client.company}</p>
+                  <p className="text-sm text-gray-600">{client.email}</p>
                 </div>
                 <button
                   onClick={() => openProposalModal(client)}

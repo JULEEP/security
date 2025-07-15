@@ -1,88 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiSearch,
-  FiMoreVertical,
-  FiChevronLeft,
-  FiChevronRight,
 } from "react-icons/fi";
 import { FaTimes } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 
 const NewClientList = () => {
-  const [clients, setClients] = useState([
-    {
-      name: "Saran Smith",
-      company: "Smith Designs",
-      email: "sarah@example.com",
-      status: "Active",
-      projects: "2 ago",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-    },
-    {
-      name: "John Jawse",
-      company: "Solutions Ltd.",
-      email: "james@example.com",
-      status: "Active",
-      projects: "As inno",
-      avatar: "",
-    },
-    {
-      name: "James Lee",
-      company: "Marketing Ltd",
-      email: "john.doe@example.com",
-      status: "Active",
-      projects: "",
-      avatar: "",
-    },
-    {
-      name: "Sarah Johnson",
-      company: "Web Solutions",
-      email: "sarah.j@example.com",
-      status: "Active",
-      projects: "3 Active",
-      avatar: "https://randomuser.me/api/portraits/women/65.jpg",
-    },
-    {
-      name: "Emma Wilson",
-      company: "Creative Agency",
-      email: "emma.w@example.com",
-      status: "No Active Projects",
-      projects: "",
-      avatar: "https://randomuser.me/api/portraits/women/72.jpg",
-    },
-    {
-      name: "John Doe",
-      company: "Lead Tax Amagy",
-      email: "john.doe@example.com",
-      status: "Lead",
-      projects: "",
-      avatar: "https://randomuser.me/api/portraits/men/60.jpg",
-    },
-    {
-      name: "David Brown",
-      company: "Brown & Co",
-      email: "david@example.com",
-      status: "Active",
-      projects: "5 Active Projects",
-      avatar: "https://randomuser.me/api/portraits/men/68.jpg",
-    },
-    {
-      name: "Michael Davis",
-      company: "Davie Industries",
-      email: "michael@example.com",
-      status: "2 Active",
-      projects: "Projets",
-      avatar: "https://randomuser.me/api/portraits/men/75.jpg",
-    },
-    {
-      name: "Patricia Taylor",
-      company: "Taylor Inc.",
-      email: "patricia@example.com",
-      status: "Active",
-      projects: "",
-      avatar: "https://randomuser.me/api/portraits/women/75.jpg",
-    },
-  ]);
+  const [clients,setClient] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newClient, setNewClient] = useState([]);
   const [listClient, setNewClientList] = useState([]);
@@ -113,6 +37,19 @@ const NewClientList = () => {
     }
   };
 
+  useEffect(()=>{
+    const freelancerId = localStorage.getItem("freelancerId");
+    if(!freelancerId){
+      console.warn("FreelancerId is not present in localstorage")
+    }
+    const fetchfreelancerClients = async ()=>{
+      const res = await fetch(`https://new-securebackend.onrender.com/api/freelancers/getclients/${freelancerId}`)
+      const data = await res.json();
+      setClient(data.clients)
+    }
+
+   fetchfreelancerClients();
+  },[])
   const [viewClient, setViewClient] = useState(null);
   const handleView = (client) => {
     setViewClient(client);
@@ -187,29 +124,23 @@ const NewClientList = () => {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-sm text-white">
-                  {client.name[0]}
+                  {client.name}
                 </div>
               )}
               <div>
                 <h4 className="font-semibold text-xl">{client.name}</h4>
-                <p className="text-lg text-gray-800">{client.company}</p>
+                <p className="text-lg text-gray-800">{client.mobile}</p>
               </div>
             </div>
             <hr className="border border-gray-100" />
             <p className="text-lg text-black">{client.email}</p>
             <div className="flex items-center justify-between">
               <span
-                className={`text-lg px-4 rounded-md  ${
-                  client.status.toLowerCase().includes("active")
-                    ? "bg-green-100 text-green-800"
-                    : client.status === "Lead"
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
+                className="text-lg px-4 rounded-md bg-blue-100 text-blue-800"
               >
-                {client.status}
+                Active
               </span>
-              {client.projects && (
+              {client.myProjects && (
                 <span className="text-sm text-black">{client.projects}</span>
               )}
             </div>

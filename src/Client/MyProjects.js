@@ -1,32 +1,44 @@
-import { useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa"; // Import icons
-
-const projectsData = [
-  { id: 1, projectName: "Project Alpha", clientName: "Xappsoft Technology", startDate: "2023-01-15", endDate: "2023-06-15", status: "In Progress" },
-  { id: 2, projectName: "Project Beta", clientName: "hgygyu", startDate: "2023-02-01", endDate: "2023-08-01", status: "Completed" },
-  { id: 3, projectName: "Project Gamma", clientName: "Eaton Randall Co", startDate: "2023-03-10", endDate: "2023-12-10", status: "Pending" },
-  { id: 4, projectName: "Project Delta", clientName: "Craft and Rollins Co", startDate: "2023-04-25", endDate: "2023-10-25", status: "In Progress" },
-  { id: 5, projectName: "Project Epsilon", clientName: "Vega James Associates", startDate: "2023-05-15", endDate: "2023-11-15", status: "Completed" },
-];
+import { useEffect, useState } from "react";
+import { FaEdit, FaTrashAlt,FaEye } from "react-icons/fa";
+import axios from "axios";
 
 export default function MyProjects() {
-  const [projects, setProjects] = useState(projectsData);
+  const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Handle removing a project
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const clientId = localStorage.getItem("clientId");
+      if (!clientId) {
+        console.error("Client ID not found in localStorage.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `https://new-securebackend.onrender.com/api/client/getallprojects/${clientId}`
+        );
+        setProjects(response.data.data || []); // `data` is the actual array of projects
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const handleRemoveProject = (id) => {
-    setProjects(projects.filter((project) => project.id !== id));
+    setProjects((prev) => prev.filter((project) => project._id !== id));
   };
 
   const filteredProjects = projects.filter(
     (project) =>
-      project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-      project.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      project.title.toLowerCase().includes(search.toLowerCase()) ||
+      project.client.name.toLowerCase().includes(search.toLowerCase()) ||
       project.status.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Limit the projects based on itemsPerPage
   const displayedProjects = filteredProjects.slice(0, itemsPerPage);
 
   return (
@@ -38,10 +50,11 @@ export default function MyProjects() {
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
             className="p-2 border rounded"
           >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
+            {[10, 20, 50, 100].map((val) => (
+              <option key={val} value={val}>
+                {val}
+              </option>
+            ))}
           </select>
           <input
             type="text"
@@ -58,8 +71,8 @@ export default function MyProjects() {
           <thead>
             <tr className="bg-gray-100 text-center">
               <th className="p-3 border">Sl</th>
-              <th className="p-3 border">Project Name</th>
-              <th className="p-3 border">Client Name</th>
+              <th className="p-3 border">Project Title</th>
+              <th className="p-3 border">Freelancer Name</th>
               <th className="p-3 border">Start Date</th>
               <th className="p-3 border">End Date</th>
               <th className="p-3 border">Status</th>
@@ -67,25 +80,30 @@ export default function MyProjects() {
             </tr>
           </thead>
           <tbody>
-            {displayedProjects.map((project) => (
-              <tr key={project.id} className="cursor-pointer hover:bg-gray-50 text-center">
-                <td className="p-3 border">{project.id}</td>
-                <td className="p-3 border">{project.projectName}</td>
-                <td className="p-3 border">{project.clientName}</td>
-                <td className="p-3 border">{project.startDate}</td>
-                <td className="p-3 border">{project.endDate}</td>
+            {displayedProjects.map((project, index) => (
+              <tr
+                key={project._id}
+                className="cursor-pointer hover:bg-gray-50 text-center"
+              >
+                <td className="p-3 border">{index + 1}</td>
+                <td className="p-3 border">{project.title}</td>
+                <td className="p-3 border">{project.client.name}</td>
+                <td className="p-3 border">
+                  {project.timeline.start?.slice(0, 10)}
+                </td>
+                <td className="p-3 border">
+                  {project.timeline.end?.slice(0, 10)}
+                </td>
                 <td className="p-3 border">{project.status}</td>
                 <td className="p-3 border">
-                  <button
-                    className="text-blue-500 hover:underline mr-2"
-                  >
-                    <FaEdit /> {/* Edit icon */}
+                  <button className="text-blue-500 hover:underline mr-2">
+                    <FaEye />
                   </button>
                   <button
                     className="text-red-500 hover:underline"
-                    onClick={() => handleRemoveProject(project.id)} // Remove project
+                    onClick={() => handleRemoveProject(project._id)}
                   >
-                    <FaTrashAlt /> {/* Trash icon */}
+                    <FaTrashAlt />
                   </button>
                 </td>
               </tr>

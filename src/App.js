@@ -29,6 +29,7 @@ import MilestoneFlow from "./Pages/Milestone.js";
 import  Portfolio  from "./Pages/Portfolio.js";
 import RegisterPage from "./Pages/Register.js";
 import ClientProposals from "./Client/ClientProposals.js";
+import ProfileForm from "./Pages/Profile.js";
 
 
 
@@ -63,6 +64,7 @@ function App() {
               <Route path="/milestone" element= {<MilestoneFlow/>}/>
               <Route path="/portfolio" element={<Portfolio/>}/>
               <Route path="/register" element={<RegisterPage/>}/>
+              <Route path="/profile" element={<ProfileForm/>}/>
             </Routes>
           </AdminLayout>
         }

@@ -83,10 +83,16 @@ const Sidebar = ({ isCollapsed, isMobile }) => {
       path: "/milestone",
     },
     {
+      icon:<i className="ri-user-fill text-white"></i>,
+      name:"Profile",
+      path: "/profile",
+    },
+    {
       icon: <i className="ri-logout-box-fill text-white"></i>,
       name: "Logout",
       action: handleLogout,
     },
+    
   ];
 
   return (
