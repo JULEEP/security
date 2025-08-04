@@ -13,3 +13,43 @@
         scrollbar-width: none;  /* Firefox */
   }
 }
+
+.custom-shape-divider-top-1750315756 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-top-1750315756 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 154px;
+}
+
+.custom-shape-divider-top-1750315756 .shape-fill {
+    fill: #ffffff;
+}
+.custom-shape-divider-bottom-1750315756 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1750315756 svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 154px;
+}
+
+.custom-shape-divider-bottom-1750315756 .shape-fill {
+  fill: #ffff;
+}

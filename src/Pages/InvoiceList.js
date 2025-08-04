@@ -1,15 +1,54 @@
 import React, { useState } from "react";
-import { FaPlus, FaTimes, FaDownload } from "react-icons/fa";
+import { FaPlus, FaTimes, FaDownload, FaEye } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import InvoiceModal from "./EditInvoice";
+
+
+const statusColors = {
+  Paid: "bg-green-100 text-green-700",
+  Pending: "bg-yellow-100 text-yellow-700",
+  Overdue: "bg-red-100 text-red-700",
+};
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([
-    { invoiceNo: "INV001", client: "Amazon", amount: 5000, date: "2025-04-01", status: "Paid" },
-    { invoiceNo: "INV002", client: "Flipkart", amount: 3000, date: "2025-04-05", status: "Pending" },
-    { invoiceNo: "INV003", client: "Google", amount: 7000, date: "2025-04-10", status: "Overdue" },
-    { invoiceNo: "INV004", client: "Meta", amount: 4500, date: "2025-04-15", status: "Paid" },
+    {
+      invoiceNo: "INV001",
+      client: "Amazon",
+      amount: 5000,
+      date: "2025-04-01",
+      status: "Paid",
+    },
+    {
+      invoiceNo: "INV002",
+      client: "Flipkart",
+      amount: 3000,
+      date: "2025-04-05",
+      status: "Pending",
+    },
+    {
+      invoiceNo: "INV003",
+      client: "Google",
+      amount: 7000,
+      date: "2025-04-10",
+      status: "Overdue",
+    },
+    {
+      invoiceNo: "INV004",
+      client: "Meta",
+      amount: 4500,
+      date: "2025-04-15",
+      status: "Paid",
+    },
   ]);
+
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  // const [viewProject, setViewProject] = useState({});
+  const handleView = () => {
+    // setViewProject(projects[index]);
+    setIsViewModalOpen(true);
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newInvoice, setNewInvoice] = useState({
@@ -24,10 +63,22 @@ const InvoiceList = () => {
     setNewInvoice({ ...newInvoice, [e.target.name]: e.target.value });
   };
 
-  const handleAddInvoice = () => {
-    if (newInvoice.invoiceNo && newInvoice.client && newInvoice.amount && newInvoice.date && newInvoice.status) {
+  const handleAddInvoice = (newInvoice) => {
+    if (
+      newInvoice.invoiceNo &&
+      newInvoice.client &&
+      newInvoice.amount &&
+      newInvoice.date &&
+      newInvoice.status
+    ) {
       setInvoices([...invoices, newInvoice]);
-      setNewInvoice({ invoiceNo: "", client: "", amount: "", date: "", status: "" });
+      setNewInvoice({
+        invoiceNo: "",
+        client: "",
+        amount: "",
+        date: "",
+        status: "",
+      });
       setIsModalOpen(false);
     } else {
       alert("Please fill all fields!");
@@ -37,7 +88,7 @@ const InvoiceList = () => {
   const generatePDF = (invoice) => {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    
+
     // Client Details (Top Section)
     doc.text("Client Details", 14, 20);
     doc.setFontSize(12);
@@ -45,7 +96,7 @@ const InvoiceList = () => {
     doc.text(`Invoice No: ${invoice.invoiceNo}`, 14, 40);
     doc.text(`Date: ${invoice.date}`, 14, 50);
     doc.text(`Status: ${invoice.status}`, 14, 60);
-    
+
     // Invoice Table Header
     const tableData = [
       ["Invoice No", "Amount", "Date", "Status"],
@@ -54,9 +105,9 @@ const InvoiceList = () => {
 
     // Invoice Table using autoTable
     autoTable(doc, {
-      startY: 70,  // Starting Y position for the table
-      head: tableData.slice(0, 1),  // Table Header
-      body: tableData.slice(1),  // Table Body
+      startY: 70, // Starting Y position for the table
+      head: tableData.slice(0, 1), // Table Header
+      body: tableData.slice(1), // Table Body
       theme: "grid",
     });
 
@@ -65,19 +116,25 @@ const InvoiceList = () => {
     doc.text(`Subtotal: $${subtotal}`, 14, doc.lastAutoTable.finalY + 10);
 
     // Add Total (for this example, we sum the amounts for all invoices)
-    const totalAmount = invoices.reduce((acc, curr) => acc + Number(curr.amount), 0);
+    const totalAmount = invoices.reduce(
+      (acc, curr) => acc + Number(curr.amount),
+      0
+    );
     doc.text(`Total: $${totalAmount}`, 14, doc.lastAutoTable.finalY + 20);
 
     // Save PDF
     doc.save(`${invoice.invoiceNo}.pdf`);
   };
 
-  const totalAmount = invoices.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalAmount = invoices.reduce(
+    (acc, curr) => acc + Number(curr.amount),
+    0
+  );
   const pendingAmount = invoices
-    .filter(inv => inv.status === "Pending")
+    .filter((inv) => inv.status === "Pending")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
   const overdueAmount = invoices
-    .filter(inv => inv.status === "Overdue")
+    .filter((inv) => inv.status === "Overdue")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   return (
@@ -100,11 +157,15 @@ const InvoiceList = () => {
         </div>
         <div className="bg-gray-100 p-6 rounded shadow text-center">
           <h3 className="text-lg font-semibold">Pending Amount</h3>
-          <p className="text-2xl font-bold mt-2 text-yellow-500">${pendingAmount}</p>
+          <p className="text-2xl font-bold mt-2 text-yellow-500">
+            ${pendingAmount}
+          </p>
         </div>
         <div className="bg-gray-100 p-6 rounded shadow text-center">
           <h3 className="text-lg font-semibold">Overdue Amount</h3>
-          <p className="text-2xl font-bold mt-2 text-red-500">${overdueAmount}</p>
+          <p className="text-2xl font-bold mt-2 text-red-500">
+            ${overdueAmount}
+          </p>
         </div>
       </div>
 
@@ -129,15 +190,35 @@ const InvoiceList = () => {
                 <td className="p-3 border">${invoice.amount}</td>
                 <td className="p-3 border">{invoice.date}</td>
                 <td className="p-3 border">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold
-                    ${invoice.status === 'Paid' ? 'bg-green-200 text-green-700' : ''}
-                    ${invoice.status === 'Pending' ? 'bg-yellow-200 text-yellow-700' : ''}
-                    ${invoice.status === 'Overdue' ? 'bg-red-200 text-red-700' : ''}
-                  `}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-semibold
+                    ${
+                      invoice.status === "Paid"
+                        ? "bg-green-200 text-green-700"
+                        : ""
+                    }
+                    ${
+                      invoice.status === "Pending"
+                        ? "bg-yellow-200 text-yellow-700"
+                        : ""
+                    }
+                    ${
+                      invoice.status === "Overdue"
+                        ? "bg-red-200 text-red-700"
+                        : ""
+                    }
+                  `}
+                  >
                     {invoice.status}
                   </span>
                 </td>
-                <td className="p-3 border text-center">
+                <td className="p-3 border text-center space-x-5">
+                  <button
+                    onClick={() => handleView()}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <FaEye />
+                  </button>
                   <button
                     onClick={() => generatePDF(invoice)}
                     className="text-blue-600 hover:text-blue-800"
@@ -153,72 +234,143 @@ const InvoiceList = () => {
 
       {/* Add Invoice Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <FaTimes size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-6 text-center">Add New Invoice</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="invoiceNo"
-                placeholder="Invoice No"
-                value={newInvoice.invoiceNo}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="text"
-                name="client"
-                placeholder="Client Name"
-                value={newInvoice.client}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="number"
-                name="amount"
-                placeholder="Amount"
-                value={newInvoice.amount}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <input
-                type="date"
-                name="date"
-                value={newInvoice.date}
-                onChange={handleInputChange}
-                className="p-3 border rounded"
-              />
-              <select
-                name="status"
-                value={newInvoice.status}
-                onChange={handleInputChange}
-                className="p-3 border rounded col-span-2"
-              >
-                <option value="">Select Status</option>
-                <option value="Paid">Paid</option>
-                <option value="Pending">Pending</option>
-                <option value="Overdue">Overdue</option>
-              </select>
+        <InvoiceModal setIsModalOpen={setIsModalOpen} handleAddInvoice={handleAddInvoice}/>
+      )}
+
+      {isViewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="relative max-w-2xl w-full bg-white shadow-xl rounded-xl font-inter h-[98vh] overflow-y-auto p-8">
+          {/* Close Button */}
+          <button
+            onClick={() => setIsViewModalOpen(false)}
+            className="absolute right-2 top-0 text-gray-600 hover:text-black text-2xl z-50 mr-2"
+          >
+            x
+          </button>
+            {/* Header */}
+            <div className="flex items-start justify-between pt-3 border-b-2 border-gray-200 pb-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src="https://i.pravatar.cc/100?img=5"
+                  alt="Sarah Smith"
+                  className="w-20 h-20 rounded-full"
+                />
+                <div>
+                  <h2 className="text-3xl font-semibold">Sarah Smith</h2>
+                  <p className="text-gray-500 text-sm">sarah@email.com</p>
+                </div>
+              </div>
+              <button className="bg-teal-700 text-white px-6 py-1 rounded-md text-sm mr-7 mt-3">
+                Invoice
+              </button>
             </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddInvoice}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Save
-              </button>
+
+            {/* Stats */}
+            <div className="flex space-x-8 ">
+              <div className="w-[70%]  border-r border-gray-200 pr-6 pt-6">
+                <div className="flex justify-between mb-8">
+                  <div>
+                    <p className="text-gray-800 text-lg mb-1">Total Billed</p>
+                    <p className="text-2xl font-bold">$9,750</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-800 text-lg mb-1">Outstanding</p>
+                    <p className="text-2xl font-bold">$3,250</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-800 text-lg mb-1">Status</p>
+                    <p className="text-2xl font-semibold">Active</p>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex items-center gap-3 mb-4">
+                  <button className="bg-teal-700 text-white px-6 py-2 rounded text-sm">
+                    + New invoice
+                  </button>
+                  <button className="bg-gray-200 px-6 py-2 rounded text-sm">
+                    Download All
+                  </button>
+                  <button className="bg-gray-200 px-6 py-2 rounded text-sm">
+                    Send Reminder
+                  </button>
+                </div>
+
+                {/* Filters */}
+                <div className="flex items-center gap-3 mb-4 ">
+                  <select className="border border-gray-300 px-6 py-2 rounded text-sm w-[33%]">
+                    <option>Status</option>
+                  </select>
+                  <select className="border border-gray-300 px-6 py-2 rounded text-sm w-[33%]">
+                    <option>Date Range</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Search invoices"
+                    className="border border-gray-300 px-6 py-2 rounded text-sm w-[33%]"
+                  />
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto border rounded ">
+                  <table className="w-full text-lg text-left">
+                    <thead className=" text-gray-600 uppercase text-sm border-b">
+                      <tr>
+                        <th className="px-4 py-3">Invoice</th>
+                        <th className="px-4 py-3">Project</th>
+                        <th className="px-4 py-3">Issue Date</th>
+                        <th className="px-4 py-3">Due Date</th>
+                        <th className="px-4 py-3">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {invoices.map((inv, idx) => (
+                        <tr key={idx} className="border-b">
+                          <td className="px-4 py-3 text-blue-500 font-medium">
+                            #{inv.id}
+                          </td>
+                          <td className="px-4 py-2">{inv.project}</td>
+                          <td className="px-4 py-2">{inv.issue}</td>
+                          <td className="px-4 py-2">{inv.due}</td>
+                          <td className="px-4 py-2">
+                            <span
+                              className={`px-3 py-1 rounded-lg font-semibold text-sm ${
+                                statusColors[inv.status]
+                              }`}
+                            >
+                              {inv.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Sidebar Summary */}
+
+              <div className="pl-6 rounded shadow-sm w-[30%] space-y-8 pt-6">
+                <div>
+                  <p className="text-lg text-gray-800">Total Invoice</p>
+                  <p className="font-semibold text-2xl mb-3">10</p>
+                </div>
+
+                <div>
+                  <p className="text-lg text-gray-800">Total Paid</p>
+                  <p className="font-semibold text-2xl mb-3">$6,500</p>
+                </div>
+
+                <div>
+                  <p className="text-lg text-gray-800">Overdue</p>
+                  <p className="font-semibold text-2xl mb-3">$1,250</p>
+                </div>
+
+                <div>
+                  <p className="text-lg text-gray-800">Upcoming Due</p>
+                  <p className="font-semibold text-2xl">$3,000</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

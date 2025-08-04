@@ -49,6 +49,11 @@ const ClientSidebar = ({ isCollapsed, isMobile }) => {
       path: "/client/setting",
     },
     {
+      icon: <i className="ri-mail-send-fill text-white"></i>,
+      name: "Proposals",
+      path: "/client/proposallist",
+    },
+    {
       icon: <i className="ri-logout-box-fill text-white"></i>,
       name: "Logout",
       action: handleLogout,

@@ -1,17 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Even if the form is not filled or validated, we'll redirect to the dashboard
-    navigate('/dashboard');
+
+    if (!email || !password) {
+      setError("Both email and password are required.");
+      return;
+    }
+
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        "https://new-securebackend.onrender.com/api/freelancers/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("freelancerId", data.freelancer._id);
+
+        localStorage.setItem("token", data.token);
+      } else {
+        alert("Login failed");
+      }
+
+      // Redirect to dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -19,11 +55,13 @@ const LoginPage = () => {
       <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-2xl overflow-hidden max-w-4xl w-full">
         {/* Form Section */}
         <div className="w-full md:w-1/2 p-8 space-y-6">
-          {/* Redeemly Text */}
-          <h1 className="text-4xl font-bold text-blue-600 text-center mb-4">Security</h1>
+          <h1 className="text-4xl font-bold text-blue-600 text-center mb-4">
+            Security
+          </h1>
 
-          {/* Vendor Login Heading */}
-          <h2 className="text-xl font-bold text-center text-gray-800">Admin Login</h2>
+          <h2 className="text-xl font-bold text-center text-gray-800">
+            Admin Login
+          </h2>
 
           {error && (
             <div className="p-3 text-red-600 bg-red-100 rounded-md shadow-sm">
@@ -66,20 +104,26 @@ const LoginPage = () => {
             <button
               type="submit"
               className={`w-full p-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 transition duration-200 transform ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                isLoading ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
               }`}
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
+          <p className="text-sm text-center text-gray-600">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-teal-600 hover:underline">
+              Register here
+            </Link>
+          </p>
         </div>
 
         {/* Image Section */}
         <div className="w-full md:w-1/2 flex justify-center p-4 md:p-0">
           <img
             src="https://static.vecteezy.com/system/resources/previews/006/584/841/original/illustration-graphic-cartoon-character-of-cyber-security-vector.jpg"
-            alt="vendor Login Illustration"
+            alt="Login Illustration"
             className="object-cover w-full h-auto rounded-lg md:rounded-none"
           />
         </div>

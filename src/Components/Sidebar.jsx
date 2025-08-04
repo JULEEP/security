@@ -78,10 +78,21 @@ const Sidebar = ({ isCollapsed, isMobile }) => {
       path: "/setting",
     },
     {
+      icon: <i className="ri-road-map-fill text-white"></i>,
+      name: "Milestone",
+      path: "/milestone",
+    },
+    {
+      icon:<i className="ri-user-fill text-white"></i>,
+      name:"Profile",
+      path: "/profile",
+    },
+    {
       icon: <i className="ri-logout-box-fill text-white"></i>,
       name: "Logout",
       action: handleLogout,
     },
+    
   ];
 
   return (
