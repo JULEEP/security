@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  FiSearch,
-} from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { FaTimes } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
+import InvoicePage from "./Postinvoice";
 
 const NewClientList = () => {
-  const [clients,setClient] = useState([]);
+  const [clients, setClient] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newClient, setNewClient] = useState([]);
   const [listClient, setNewClientList] = useState([]);
+  const [viewClient, setViewClient] = useState(null);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const fetchClients = async () => {
     try {
       const response = await fetch(
-        "https://new-securebackend.onrender.com/api/client/getallclients"
+        "https://freelance-management-frontend.onrender.com/api/client/getallclients"
       );
       const result = await response.json();
 
@@ -37,23 +38,21 @@ const NewClientList = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const freelancerId = localStorage.getItem("freelancerId");
-    if(!freelancerId){
-      console.warn("FreelancerId is not present in localstorage")
+    if (!freelancerId) {
+      console.warn("FreelancerId is not present in localstorage");
     }
-    const fetchfreelancerClients = async ()=>{
-      const res = await fetch(`https://new-securebackend.onrender.com/api/freelancers/getclients/${freelancerId}`)
+    const fetchfreelancerClients = async () => {
+      const res = await fetch(
+        `https://freelance-management-frontend.onrender.com/api/freelancers/getclients/${freelancerId}`
+      );
       const data = await res.json();
-      setClient(data.clients)
-    }
+      setClient(data.clients);
+    };
 
-   fetchfreelancerClients();
-  },[])
-  const [viewClient, setViewClient] = useState(null);
-  const handleView = (client) => {
-    setViewClient(client);
-  };
+    fetchfreelancerClients();
+  }, []);
 
   return (
     <div className="p-8 bg-white">
@@ -109,11 +108,11 @@ const NewClientList = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {clients.map((client, index) => (
+        {clients?.map((client, index) => (
           <div
             key={index}
             className="p-4 rounded-lg  border border-gray-100 flex flex-col space-y-2"
-            onClick={() => handleView(client)}
+            onClick={() => setViewClient(client)}
           >
             <div className="flex items-center space-x-4">
               {client.avatar ? (
@@ -135,9 +134,7 @@ const NewClientList = () => {
             <hr className="border border-gray-100" />
             <p className="text-lg text-black">{client.email}</p>
             <div className="flex items-center justify-between">
-              <span
-                className="text-lg px-4 rounded-md bg-blue-100 text-blue-800"
-              >
+              <span className="text-lg px-4 rounded-md bg-blue-100 text-blue-800">
                 Active
               </span>
               {client.myProjects && (
@@ -232,14 +229,14 @@ const NewClientList = () => {
                 />
                 <div className="flex-grow">
                   <h1 className="text-3xl font-semibold text-gray-800 mb-2">
-                    Sarah Smith{" "}
+                    {viewClient.name}{" "}
                     <span className="ml-4 px-6 py-1 text-sm bg-green-400 text-white rounded-full">
                       Active
                     </span>
                   </h1>
-                  <p className="text-lg text-gray-800 ">sarah@email.com</p>
+                  <p className="text-lg text-gray-800 ">{viewClient.email}</p>
                   <p className="text-lg text-gray-700">
-                    +1 234 567 8801 • WebWorks Inc.
+                    {viewClient.mobile} • WebWorks Inc.
                   </p>
                 </div>
               </div>
@@ -248,7 +245,12 @@ const NewClientList = () => {
                 <div className="flex space-x-6 border-y border-gray-200 text-gray-600 font-medium text-xl py-3 px-10">
                   <button className=" border-black text-black">Overview</button>
                   <button>Projects</button>
-                  <button>Invoices</button>
+                  <button
+                    onClick={() => setShowInvoiceModal(true)}
+                    className="hover:text-black border-black"
+                  >
+                    Invoices
+                  </button>
                   <button>Time Logs</button>
                   <button>Chats</button>
                   <button>Files</button>
@@ -399,6 +401,19 @@ const NewClientList = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {showInvoiceModal && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white w-[90%] max-w-5xl h-[90%] overflow-y-auto rounded-lg shadow-2xl relative">
+            <button
+              onClick={() => setShowInvoiceModal(false)}
+              className="absolute top-3 right-4 text-gray-600 hover:text-black text-xl"
+            >
+              &times;
+            </button>
+            <InvoicePage client={viewClient} />
           </div>
         </div>
       )}

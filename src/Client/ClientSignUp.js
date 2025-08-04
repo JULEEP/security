@@ -41,7 +41,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        "https://new-securebackend.onrender.com/api/client/register",
+        "https://freelance-management-frontend.onrender.com/api/client/register",
         {
           method: "POST",
           headers: {

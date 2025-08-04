@@ -21,7 +21,7 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(
-        "https://new-securebackend.onrender.com/api/freelancers/login",
+        "https://freelance-management-frontend.onrender.com/api/freelancers/login",
         {
           method: "POST",
           headers: {

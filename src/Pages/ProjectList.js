@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaPlus, FaTimes, FaEye } from "react-icons/fa";
 import axios from "axios";
-
+import UpdateProjectModal from "./UpdateProject";
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewProject, setViewProject] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState(null);
   const [newProject, setNewProject] = useState({
     name: "",
     category: "",
@@ -22,37 +24,35 @@ const ProjectList = () => {
   });
 
   const projectsPerPage = 5;
+  const freelancerId = localStorage.getItem("freelancerId");
+  const fetchProjects = async () => {
+    try {
+      if (!freelancerId) return;
 
+      const response = await axios.get(
+        `https://freelance-management-frontend.onrender.com/api/freelancers/allprojects/${freelancerId}`
+      );
+
+      const transformed = response.data.map((proj) => ({
+        name: proj.title,
+        category: "Web Design",
+        client: proj.client?.name || "Unknown",
+        completion: 100,
+        status: proj.status,
+        dueDate: proj.timeline?.end?.slice(0, 10),
+        budget: `₹${proj.total}`,
+        progress: "100%",
+        assignedTo: "You",
+        association: proj.client?.company || "",
+        raw: proj,
+      }));
+
+      setProjects(transformed);
+    } catch (err) {
+      console.error("Error fetching projects:", err);
+    }
+  };
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const freelancerId = localStorage.getItem("freelancerId");
-        if (!freelancerId) return;
-
-        const response = await axios.get(
-          `https://new-securebackend.onrender.com/api/freelancers/allprojects/${freelancerId}`
-        );
-
-        const transformed = response.data.map((proj) => ({
-          name: proj.title,
-          category: "Web Design",
-          client: proj.client?.name || "Unknown",
-          completion: 100,
-          status: proj.status,
-          dueDate: proj.timeline?.end?.slice(0, 10),
-          budget: `₹${proj.total}`,
-          progress: "100%",
-          assignedTo: "You",
-          association: proj.client?.company || "",
-          raw: proj,
-        }));
-
-        setProjects(transformed);
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-      }
-    };
-
     fetchProjects();
   }, []);
 
@@ -81,8 +81,22 @@ const ProjectList = () => {
     }
   };
 
-  const handleDelete = (index) => {
-    setProjects(projects.filter((_, i) => i !== index));
+  const handleDelete = async (proposalId) => {
+    try {
+      const res = await fetch(
+        `https://freelance-management-frontend.onrender.com/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
+        { method: "DELETE" }
+      );
+      const data = res.json();
+      if (res.ok) {
+        console.log("project delted succcessfully");
+        fetchProjects();
+      } else {
+        console.log("Error" + data.message);
+      }
+    } catch (error) {
+      console.log("Delete error" + error);
+    }
   };
 
   const handleEdit = (index) => {
@@ -113,26 +127,45 @@ const ProjectList = () => {
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full border text-sm">
+        <table className="w-full border">
           <thead className="bg-gray-200">
             <tr>
-              <th className="p-3 border text-left">Project Name</th>
-              <th className="p-3 border text-left">Category</th>
-              <th className="p-3 border text-left">Client</th>
-              <th className="p-3 border text-left">Completed (%)</th>
-              <th className="p-3 border text-left">Status</th>
-              <th className="p-3 border text-left">Action</th>
+              <th className="p-3 border ">Project Name</th>
+              <th className="p-3 border ">Category</th>
+              <th className="p-3 border ">Client</th>
+              <th className="p-3 border ">Completed (%)</th>
+              <th className="p-3 border">Status</th>
+              <th className="p-3 border">Action</th>
             </tr>
           </thead>
           <tbody>
             {currentProjects.map((project, index) => (
-              <tr key={index} className="hover:bg-gray-100 border-b">
+              <tr
+                key={index}
+                className="hover:bg-gray-100 border-b text-center"
+              >
                 <td className="p-3 border">{project.name}</td>
                 <td className="p-3 border">{project.category}</td>
                 <td className="p-3 border">{project.client}</td>
                 <td className="p-3 border">{project.completion}%</td>
-                <td className="p-3 border">{project.status}</td>
-                <td className="p-3 border flex gap-3">
+                <td className="p-3 border">
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full 
+      ${
+        project.status === "Accepted"
+          ? "bg-green-100 text-green-800"
+          : project.status === "In Progress"
+          ? "bg-yellow-100 text-yellow-800"
+          : project.status === "Pending"
+          ? "bg-red-100 text-red-800"
+          : "bg-gray-100 text-gray-800"
+      }`}
+                  >
+                    {project.status}
+                  </span>
+                </td>
+
+                <td className="p-3 flex gap-3 align-center">
                   <button
                     onClick={() => handleView(indexOfFirst + index)}
                     className="text-blue-500 hover:text-blue-700"
@@ -140,7 +173,10 @@ const ProjectList = () => {
                     <FaEye />
                   </button>
                   <button
-                    onClick={() => handleEdit(indexOfFirst + index)}
+                    onClick={() => {
+                      setSelectedProposal(project.raw);
+                      setIsEditModalOpen(true);
+                    }}
                     className="text-green-500 hover:text-green-700"
                   >
                     <FaEdit />
@@ -200,19 +236,36 @@ const ProjectList = () => {
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-2">Client Information</h3>
               <div className="grid grid-cols-2 gap-4 text-gray-700">
-                <p><strong>Name:</strong> {viewProject.client?.name}</p>
-                <p><strong>Company:</strong> {viewProject.client?.company}</p>
-                <p><strong>Email:</strong> {viewProject.client?.email}</p>
-                <p><strong>Phone:</strong> {viewProject.client?.phone}</p>
-                <p><strong>Date:</strong> {new Date(viewProject.client?.date).toLocaleDateString()}</p>
+                <p>
+                  <strong>Name:</strong> {viewProject.client?.name}
+                </p>
+                <p>
+                  <strong>Company:</strong> {viewProject.client?.company}
+                </p>
+                <p>
+                  <strong>Email:</strong> {viewProject.client?.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {viewProject.client?.phone}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(viewProject.client?.date).toLocaleDateString()}
+                </p>
               </div>
             </div>
 
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-2">Timeline</h3>
               <div className="grid grid-cols-2 gap-4 text-gray-700">
-                <p><strong>Start:</strong> {new Date(viewProject.timeline?.start).toLocaleDateString()}</p>
-                <p><strong>End:</strong> {new Date(viewProject.timeline?.end).toLocaleDateString()}</p>
+                <p>
+                  <strong>Start:</strong>{" "}
+                  {new Date(viewProject.timeline?.start).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>End:</strong>{" "}
+                  {new Date(viewProject.timeline?.end).toLocaleDateString()}
+                </p>
               </div>
             </div>
 
@@ -239,12 +292,40 @@ const ProjectList = () => {
               </ul>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
+            {/* <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
               <p><strong>Created:</strong> {new Date(viewProject.createdAt).toLocaleString()}</p>
               <p><strong>Last Updated:</strong> {new Date(viewProject.updatedAt).toLocaleString()}</p>
-            </div>
+            </div> */}
           </div>
         </div>
+      )}
+
+      {/* //to edit project */}
+      {/* to edit proposal */}
+      {isEditModalOpen && selectedProposal && (
+        <UpdateProjectModal
+          setIsModalOpen={setIsEditModalOpen}
+          proposal={selectedProposal}
+          handleUpdateProposal={(updatedProposal) => {
+            setProjects((prevProjects) =>
+              prevProjects.map((proj) =>
+                proj.raw._id === updatedProposal._id
+                  ? {
+                      ...proj,
+                      name: updatedProposal.title,
+                      client: updatedProposal.client?.name || "Unknown",
+                      dueDate: updatedProposal.timeline?.end?.slice(0, 10),
+                      budget: `₹${updatedProposal.total}`,
+                      status: updatedProposal.status,
+                      raw: updatedProposal,
+                    }
+                  : proj
+              )
+            );
+            setSelectedProposal(null);
+            setIsEditModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

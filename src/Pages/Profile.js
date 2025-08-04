@@ -17,7 +17,7 @@ const defaultFormData = {
   linkedin: "",
   github: "",
   twitter: "",
-  // profileImage: null,
+  profileImage:"",
   skills: [],
   services: [],
   testimonials: [],
@@ -757,7 +757,7 @@ const ProfileForm = () => {
     async function fetchProfile() {
       try {
         const res = await fetch(
-          `https://new-securebackend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
+          `https://freelance-management-frontend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
         );
         const data = await res.json();
         if (data.freelancer) {
@@ -806,7 +806,7 @@ const ProfileForm = () => {
 
     try {
       const res = await fetch(
-        `https://new-securebackend.onrender.com/api/freelancers/updatefreelancers/${freelancerId}`,
+        `https://freelance-management-frontend.onrender.com/api/freelancers/updatefreelancers/${freelancerId}`,
         {
           method: "PUT",
           headers: {
@@ -823,7 +823,7 @@ const ProfileForm = () => {
 
         // 🔁 Re-fetch updated data to update the form visually
         const updatedRes = await fetch(
-          `https://new-securebackend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
+          `https://freelance-management-frontend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
         );
         const updatedData = await updatedRes.json();
         if (updatedData.freelancer) {

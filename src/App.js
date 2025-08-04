@@ -19,7 +19,7 @@ import MyInvoiceList from "./Client/MyInvoiceList.js";
 import ClientSettings from "./Client/ClientSettings.js";
 import NewClientList from "./Pages/NewClientList.js";
 import Reports from "./Pages/Reports.js";
-import ProposalModal from "./Pages/Editproposal.js";
+import ProposalModal from "./Pages/Addproposal.js";
 import InvoiceModal from "./Pages/EditInvoice.js";
 import InvoicePage from "./Pages/InvoicePage.js";
 import Signup from "./Client/ClientSignUp.js";

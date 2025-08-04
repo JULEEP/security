@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus, FaTimes, FaDownload, FaEye } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import InvoiceModal from "./EditInvoice";
-
 
 const statusColors = {
   Paid: "bg-green-100 text-green-700",
@@ -12,41 +11,38 @@ const statusColors = {
 };
 
 const InvoiceList = () => {
-  const [invoices, setInvoices] = useState([
-    {
-      invoiceNo: "INV001",
-      client: "Amazon",
-      amount: 5000,
-      date: "2025-04-01",
-      status: "Paid",
-    },
-    {
-      invoiceNo: "INV002",
-      client: "Flipkart",
-      amount: 3000,
-      date: "2025-04-05",
-      status: "Pending",
-    },
-    {
-      invoiceNo: "INV003",
-      client: "Google",
-      amount: 7000,
-      date: "2025-04-10",
-      status: "Overdue",
-    },
-    {
-      invoiceNo: "INV004",
-      client: "Meta",
-      amount: 4500,
-      date: "2025-04-15",
-      status: "Paid",
-    },
-  ]);
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        const freelancerId = localStorage.getItem("freelancerId");
+        if (!freelancerId) {
+          console.warn("No freelancerId found in localStorage");
+          return;
+        }
+
+        const res = await fetch(
+          `https://freelance-management-frontend.onrender.com/api/freelancers/freelancerinvoices/${freelancerId}`
+        );
+
+        const data = await res.json(); // parse response as JSON
+
+        if (data && data.invoices) {
+          setInvoices(data.invoices);
+        } else {
+          console.warn("No invoices found in response");
+        }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+
+    fetchInvoices();
+  }, []);
 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  // const [viewProject, setViewProject] = useState({});
   const handleView = () => {
-    // setViewProject(projects[index]);
     setIsViewModalOpen(true);
   };
 
@@ -171,45 +167,29 @@ const InvoiceList = () => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border text-sm">
+        <table className="w-full border ">
           <thead className="bg-gray-200">
             <tr>
-              <th className="p-3 border text-left">Invoice No</th>
-              <th className="p-3 border text-left">Client</th>
-              <th className="p-3 border text-left">Amount</th>
-              <th className="p-3 border text-left">Date</th>
-              <th className="p-3 border text-left">Status</th>
-              <th className="p-3 border text-left">Action</th>
+              <th className=" px-4 py-2 border ">Invoice No</th>
+              <th className=" px-4 py-2 border">Client</th>
+              <th className=" px-4 py-2 border ">Amount</th>
+              <th className=" px-4 py-2 border ">Date</th>
+              <th className=" px-4 py-2 border ">Status</th>
+              <th className=" px-4 py-2 border ">Action</th>
             </tr>
           </thead>
           <tbody>
             {invoices.map((invoice, index) => (
-              <tr key={index} className="hover:bg-gray-100 border-b">
-                <td className="p-3 border">{invoice.invoiceNo}</td>
-                <td className="p-3 border">{invoice.client}</td>
-                <td className="p-3 border">${invoice.amount}</td>
-                <td className="p-3 border">{invoice.date}</td>
-                <td className="p-3 border">
+              <tr key={index} className="hover:bg-gray-100 border-b text-center px-4 py-2">
+                <td className="px-4 py-3 border">{invoice.invoiceNumber}</td>
+                <td className="px-4 py-2 border">{invoice.clientId.name}</td>
+                <td className=" border">${invoice.grandTotal}</td>
+                <td className=" border">{invoice.invoiceDate.split("T")[0]}</td>
+                <td className=" border">
                   <span
-                    className={`px-2 py-1 rounded text-xs font-semibold
-                    ${
-                      invoice.status === "Paid"
-                        ? "bg-green-200 text-green-700"
-                        : ""
-                    }
-                    ${
-                      invoice.status === "Pending"
-                        ? "bg-yellow-200 text-yellow-700"
-                        : ""
-                    }
-                    ${
-                      invoice.status === "Overdue"
-                        ? "bg-red-200 text-red-700"
-                        : ""
-                    }
-                  `}
+                    className= "px-2 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800"
                   >
-                    {invoice.status}
+                    Pending
                   </span>
                 </td>
                 <td className="p-3 border text-center space-x-5">
@@ -234,19 +214,22 @@ const InvoiceList = () => {
 
       {/* Add Invoice Modal */}
       {isModalOpen && (
-        <InvoiceModal setIsModalOpen={setIsModalOpen} handleAddInvoice={handleAddInvoice}/>
+        <InvoiceModal
+          setIsModalOpen={setIsModalOpen}
+          handleAddInvoice={handleAddInvoice}
+        />
       )}
 
       {isViewModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative max-w-2xl w-full bg-white shadow-xl rounded-xl font-inter h-[98vh] overflow-y-auto p-8">
-          {/* Close Button */}
-          <button
-            onClick={() => setIsViewModalOpen(false)}
-            className="absolute right-2 top-0 text-gray-600 hover:text-black text-2xl z-50 mr-2"
-          >
-            x
-          </button>
+          <div className="relative max-w-2xl w-full bg-white shadow-xl rounded-xl font-inter h-[98vh] overflow-y-auto p-8">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsViewModalOpen(false)}
+              className="absolute right-2 top-0 text-gray-600 hover:text-black text-2xl z-50 mr-2"
+            >
+              x
+            </button>
             {/* Header */}
             <div className="flex items-start justify-between pt-3 border-b-2 border-gray-200 pb-6">
               <div className="flex items-center gap-4">

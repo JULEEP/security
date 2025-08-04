@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ProposalModal from "./Editproposal";
+import ProposalModal from "./Addproposal";
 
 export default function ClientList({ setIsClientModalOpen, handleAddProposal }) {
   const [clients, setClients] = useState([]);
@@ -9,7 +9,7 @@ export default function ClientList({ setIsClientModalOpen, handleAddProposal }) 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await fetch("https://new-securebackend.onrender.com/api/client/getallclients");
+        const res = await fetch("https://freelance-management-frontend.onrender.com/api/client/getallclients");
         const data = await res.json();
         setClients(data.clients || []);
       } catch (error) {

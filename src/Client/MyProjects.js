@@ -1,35 +1,51 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrashAlt,FaEye } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import axios from "axios";
+import ProjectModal from "./SingleProject";
 
 export default function MyProjects() {
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedProjects, setSelectedProjects] = useState(null);
+  const clientId = localStorage.getItem("clientId");
+  const fetchProjects = async () => {
+    if (!clientId) {
+      console.error("Client ID not found in localStorage.");
+      return;
+    }
 
+    try {
+      const response = await axios.get(
+        `https://freelance-management-frontend.onrender.com/api/client/getallprojects/${clientId}`
+      );
+      setProjects(response.data.data || []); // `data` is the actual array of projects
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
   useEffect(() => {
-    const fetchProjects = async () => {
-      const clientId = localStorage.getItem("clientId");
-      if (!clientId) {
-        console.error("Client ID not found in localStorage.");
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `https://new-securebackend.onrender.com/api/client/getallprojects/${clientId}`
-        );
-        setProjects(response.data.data || []); // `data` is the actual array of projects
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-
     fetchProjects();
   }, []);
 
-  const handleRemoveProject = (id) => {
-    setProjects((prev) => prev.filter((project) => project._id !== id));
+  const handleDeleteProject = async (projectId) => {
+    try {
+      const res = await fetch(
+        `https://freelance-management-frontend.onrender.com/api/client/delete-project/${clientId}/${projectId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = res.json();
+      if (res.ok) {
+        alert("proposal deleted successfully");
+        fetchProjects();
+      } else {
+        console.log("error" + data.message);
+      }
+    } catch (error) {
+      console.log("project delete error" + error);
+    }
   };
 
   const filteredProjects = projects.filter(
@@ -94,14 +110,32 @@ export default function MyProjects() {
                 <td className="p-3 border">
                   {project.timeline.end?.slice(0, 10)}
                 </td>
-                <td className="p-3 border">{project.status}</td>
                 <td className="p-3 border">
-                  <button className="text-blue-500 hover:underline mr-2">
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full 
+      ${
+        project.status === "Accepted"
+          ? "bg-green-100 text-green-800"
+          : project.status === "In Progress"
+          ? "bg-yellow-100 text-yellow-800"
+          : project.status === "Pending"
+          ? "bg-red-100 text-red-800"
+          : "bg-gray-100 text-gray-800"
+      }`}
+                  >
+                    {project.status}
+                  </span>
+                </td>
+                <td className="p-3 border">
+                  <button
+                    className="text-blue-500 hover:underline mr-2"
+                    onClick={() => setSelectedProjects(project)}
+                  >
                     <FaEye />
                   </button>
                   <button
                     className="text-red-500 hover:underline"
-                    onClick={() => handleRemoveProject(project._id)}
+                    onClick={() => handleDeleteProject(project._id)}
                   >
                     <FaTrashAlt />
                   </button>
@@ -111,6 +145,12 @@ export default function MyProjects() {
           </tbody>
         </table>
       </div>
+      {selectedProjects && (
+        <ProjectModal
+          projects={selectedProjects}
+          onClose={() => setSelectedProjects(null)}
+        />
+      )}
     </div>
   );
 }

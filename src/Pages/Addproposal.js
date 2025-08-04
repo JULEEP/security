@@ -75,7 +75,7 @@ export default function ProposalModal({
       !clientPhone.trim() ||
       terms.length === 0
     ) {
-      alert("All fields are required.");
+      // alert("All fields are required.");
       return;
     }
 
@@ -101,7 +101,7 @@ export default function ProposalModal({
 
     try {
       const response = await fetch(
-        `https://new-securebackend.onrender.com/api/freelancers/create-proposals/${freelancerId}`,
+        `https://freelance-management-frontend.onrender.com/api/freelancers/create-proposals/${freelancerId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -354,3 +354,8 @@ export default function ProposalModal({
     </div>
   );
 }
+
+
+
+
+

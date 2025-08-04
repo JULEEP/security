@@ -1,15 +1,37 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { FaDownload } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const MyInvoiceList = () => {
-  const [invoices, setInvoices] = useState([
-    { invoiceNo: "INV001", client: "Amazon", amount: 5000, date: "2025-04-01", status: "Paid" },
-    { invoiceNo: "INV002", client: "Flipkart", amount: 3000, date: "2025-04-05", status: "Pending" },
-    { invoiceNo: "INV003", client: "Google", amount: 7000, date: "2025-04-10", status: "Overdue" },
-    { invoiceNo: "INV004", client: "Meta", amount: 4500, date: "2025-04-15", status: "Paid" },
-  ]);
+  const [invoices, setInvoices] = useState([]);
+  useEffect(() => {
+      const fetchInvoices = async () => {
+        try {
+          const freelancerId = localStorage.getItem("freelancerId");
+          if (!freelancerId) {
+            console.warn("No freelancerId found in localStorage");
+            return;
+          }
+  
+          const res = await fetch(
+            `https://freelance-management-frontend.onrender.com/api/freelancers/freelancerinvoices/${freelancerId}`
+          );
+  
+          const data = await res.json(); // parse response as JSON
+  
+          if (data && data.invoices) {
+            setInvoices(data.invoices);
+          } else {
+            console.warn("No invoices found in response");
+          }
+        } catch (error) {
+          console.error("Error fetching invoices:", error);
+        }
+      };
+  
+      fetchInvoices();
+    }, []);
 
   const generatePDF = (invoice) => {
     const doc = new jsPDF();
@@ -79,31 +101,29 @@ const MyInvoiceList = () => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border text-sm">
+        <table className="w-full border">
           <thead className="bg-gray-200">
             <tr>
-              <th className="p-3 border text-left">Invoice No</th>
-              <th className="p-3 border text-left">Client</th>
-              <th className="p-3 border text-left">Amount</th>
-              <th className="p-3 border text-left">Date</th>
-              <th className="p-3 border text-left">Status</th>
-              <th className="p-3 border text-left">Action</th>
+              <th className="px-4 py-2  border">Invoice No</th>
+              <th className="px-4 py-2 border ">Freelancer</th>
+              <th className="px-4 py-2 border">Amount</th>
+              <th className="px-4 py-2 border">Date</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-center">
             {invoices.map((invoice, index) => (
               <tr key={index} className="hover:bg-gray-100 border-b">
-                <td className="p-3 border">{invoice.invoiceNo}</td>
-                <td className="p-3 border">{invoice.client}</td>
-                <td className="p-3 border">${invoice.amount}</td>
-                <td className="p-3 border">{invoice.date}</td>
-                <td className="p-3 border">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold
-                    ${invoice.status === 'Paid' ? 'bg-green-200 text-green-700' : ''}
-                    ${invoice.status === 'Pending' ? 'bg-yellow-200 text-yellow-700' : ''}
-                    ${invoice.status === 'Overdue' ? 'bg-red-200 text-red-700' : ''}
-                  `}>
-                    {invoice.status}
+                <td className="px-4 py-2 border">{invoice.invoiceNumber}</td>
+                <td className="px-4 py-2 border">{invoice.freelancerId.name}</td>
+                <td className="px-4 py-2 border">${invoice.grandTotal}</td>
+                <td className="px-4 py-2 border">{invoice.invoiceDate.split("T")[0]}</td>
+                 <td className="px-4 py-2 border">
+                  <span
+                    className={"px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-800" }
+                  >
+                   Pending
                   </span>
                 </td>
                 <td className="p-3 border text-center">

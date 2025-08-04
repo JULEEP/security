@@ -38,7 +38,7 @@ const RegisterPage = () => {
   setIsLoading(true);
 
   try {
-    const response = await fetch('https://new-securebackend.onrender.com/api/freelancers/register', {
+    const response = await fetch('https://freelance-management-frontend.onrender.com/api/freelancers/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

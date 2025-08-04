@@ -1,28 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch, FaPlus, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import {
+  FaSearch,
+  FaPlus,
+  FaEye,
+  FaEdit,
+  FaTrash,
+  FaCommentsDollar,
+} from "react-icons/fa";
 import ClientList from "./ClientList";
+import UpdateProposalModal from "./UpdateProposal";
 
 export default function ProposalsList() {
   const [editProposalIndex, setEditProposalIndex] = useState(null);
   const [editProposalData, setEditProposalData] = useState(null);
   const [search, setSearch] = useState("");
   const [proposals, setProposals] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState(null);
 
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [viewProposal, setViewProposal] = useState(null);
-
+  const freelancerId = localStorage.getItem("freelancerId");
+  //to fetch all proposals
+  const fetchProposals = async () => {
+    const res = await fetch(
+      `https://freelance-management-frontend.onrender.com/api/freelancers/allproposals/${freelancerId}`
+    );
+    const data = await res.json();
+    console.log(data);
+    setProposals(data);
+  };
   useEffect(() => {
-    const freelancerId = localStorage.getItem("freelancerId");
     if (!freelancerId) {
       console.warn("freelancerId is not in localstorage");
     }
-    const fetchProposals = async () => {
-      const res = await fetch(
-        `https://new-securebackend.onrender.com/api/freelancers/allproposals/${freelancerId}`
-      );
-      const data = await res.json();
-      setProposals(data);
-    };
+
     fetchProposals();
   }, []);
 
@@ -47,21 +59,31 @@ export default function ProposalsList() {
     } else {
       alert("Please fill all fields!");
     }
+    fetchProposals();
   };
 
-  const handleDelete = (index) => {
-    if (window.confirm("Are you sure you want to delete this proposal?")) {
-      setProposals(proposals.filter((_, i) => i !== index));
+  //delete proposal
+  const handleDelete = async (proposalId) => {
+    try {
+      const res = await fetch(
+        `https://freelance-management-frontend.onrender.com/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = res.json();
+      if (res.ok) {
+        alert("Proposal Deleted successfully");
+        fetchProposals();
+      } else {
+        console.log("Error" + data.message);
+      }
+    } catch (error) {
+      console.log("Delete Error" + error);
     }
   };
 
-  const statusColors = {
-    Sent: "bg-blue-100 text-blue-700",
-    Accepted: "bg-green-100 text-green-700",
-    Pending: "bg-yellow-100 text-yellow-800",
-    Viewed: "bg-purple-100 text-purple-700",
-    Rejected: "bg-red-100 text-red-700",
-  };
+  
 
   return (
     <div className="flex flex-col p-6">
@@ -95,7 +117,7 @@ export default function ProposalsList() {
       </div>
 
       <div className="w-full mt-6 overflow-y-auto max-h-[400px] border rounded-md">
-        <table className="w-full text-left table-auto">
+        <table className="w-full text-center table-auto">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr className="border-b h-12">
               <th className="py-2 px-4">Proposals</th>
@@ -108,20 +130,29 @@ export default function ProposalsList() {
           </thead>
           <tbody>
             {proposals.map((proposal, index) => (
-              <tr key={index} className="border-b">
+              <tr key={index} className="border-b text-center">
                 <td className="py-2 px-4">{proposal.title}</td>
-                <td className="py-2 px-4">{proposal.client.name}</td>
-                <td className="py-2 px-4">
+                <td className="py-2 px-4 border">{proposal.client.name}</td>
+                <td className="p-3 border">
                   <span
-                    className={`px-3 py-1 rounded text-xs font-medium ${
-                      statusColors[proposal.status]
-                    }`}
+                    className={`px-3 py-1 text-sm font-medium rounded-full 
+      ${
+        proposal.status === "Accepted"
+          ? "bg-green-100 text-green-800"
+          : proposal.status === "In Progress"
+          ? "bg-yellow-100 text-yellow-800"
+          : proposal.status === "Pending"
+          ? "bg-red-100 text-red-800"
+          : "bg-gray-100 text-gray-800"
+      }`}
                   >
                     {proposal.status}
                   </span>
                 </td>
-                <td className="py-2 px-4">{proposal.total}</td>
-                <td className="py-2 px-4">{proposal.timeline.start.split("T")[0]}</td>
+                <td className="py-2 px-4 border">{proposal.total}</td>
+                <td className="py-2 px-4 border">
+                  {proposal.timeline.start.split("T")[0]}
+                </td>
                 <td className="py-2 px-4 flex gap-3">
                   <button
                     className="text-blue-500 hover:text-blue-700"
@@ -129,11 +160,18 @@ export default function ProposalsList() {
                   >
                     <FaEye />
                   </button>
-                  <button className="text-green-500 hover:text-green-700">
+                  <button
+                    className="text-green-500 hover:text-green-700"
+                    onClick={() => {
+                      setSelectedProposal(proposal);
+                      setIsEditModalOpen(true);
+                    }}
+                  >
                     <FaEdit />
                   </button>
+
                   <button
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(proposal._id)}
                     className="text-red-500 hover:text-red-700"
                   >
                     <FaTrash />
@@ -145,6 +183,7 @@ export default function ProposalsList() {
         </table>
       </div>
 
+      {/* to add new proposal */}
       {isClientModalOpen && (
         <ClientList
           isClientModalOpen={isClientModalOpen}
@@ -152,6 +191,7 @@ export default function ProposalsList() {
           handleAddProposal={handleAddProposal}
         />
       )}
+      {/* //to view proposal */}
       {viewProposal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center py-4">
           <div className="relative max-h-[90vh] w-full max-w-5xl  bg-white rounded-2xl shadow-lg border border-gray-200 font-inter pb-6">
@@ -179,7 +219,6 @@ export default function ProposalsList() {
                   </p>
                 </div>
               </div>
-
 
               {/* Main Content */}
               <div className="flex flex-col md:flex-row justify-between mt-6">
@@ -273,11 +312,25 @@ export default function ProposalsList() {
                   </div>
                 </div>
               </div>
-
-              
             </div>
           </div>
         </div>
+      )}
+      {/* to edit proposal */}
+      {isEditModalOpen && selectedProposal && (
+        <UpdateProposalModal
+          setIsModalOpen={setIsEditModalOpen}
+          proposal={selectedProposal}
+          handleUpdateProposal={(updatedProposal) => {
+            setProposals((prev) =>
+              prev.map((p) =>
+                p._id === updatedProposal._id ? updatedProposal : p
+              )
+            );
+            setSelectedProposal(null);
+            fetchProposals();
+          }}
+        />
       )}
     </div>
   );
