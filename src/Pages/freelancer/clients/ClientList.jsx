@@ -3,6 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { FaTimes } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import InvoicePage from "./PostInvoice";
+import { API_URL } from "../../../config";
 
 const ClientList = () => {
   const [clients, setClient] = useState([]);
@@ -15,7 +16,7 @@ const ClientList = () => {
   const fetchClients = async () => {
     try {
       const response = await fetch(
-        "https://freelance-management-frontend.onrender.com/api/client/getallclients"
+        `${API_URL}/api/client/getallclients`
       );
       const result = await response.json();
 
@@ -45,7 +46,7 @@ const ClientList = () => {
     }
     const fetchfreelancerClients = async () => {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/getclients/${freelancerId}`
+        `${API_URL}/api/freelancers/getclients/${freelancerId}`
       );
       const data = await res.json();
       setClient(data.clients);

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const FreelancerLogin = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const FreelancerLogin = () => {
 
     try {
       const response = await fetch(
-        "https://freelance-management-frontend.onrender.com/api/freelancers/login",
+        `${API_URL}/api/freelancers/login`,
         {
           method: "POST",
           headers: {

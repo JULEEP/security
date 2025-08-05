@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import ClientList from "./ClientList";
 import EditProposal from "./EditProposal";
+import { API_URL } from "../../../config";
 
 export default function ProposalsList() {
   const [editProposalIndex, setEditProposalIndex] = useState(null);
@@ -24,7 +25,7 @@ export default function ProposalsList() {
   //to fetch all proposals
   const fetchProposals = async () => {
     const res = await fetch(
-      `https://freelance-management-frontend.onrender.com/api/freelancers/allproposals/${freelancerId}`
+      `${API_URL}/api/freelancers/allproposals/${freelancerId}`
     );
     const data = await res.json();
     console.log(data);
@@ -66,7 +67,7 @@ export default function ProposalsList() {
   const handleDelete = async (proposalId) => {
     try {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
+        `${API_URL}/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
         {
           method: "DELETE",
         }

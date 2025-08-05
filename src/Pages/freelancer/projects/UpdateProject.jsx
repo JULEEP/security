@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect,useState } from "react";
+import { API_URL } from "../../../config";
 export default function UpdateProjectModal({
   setIsModalOpen,
   proposal,
@@ -78,7 +79,7 @@ export default function UpdateProjectModal({
 
     try {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/updateproject/${freelancerId}/${proposal._id}`,
+        `${API_URL}/api/freelancers/updateproject/${freelancerId}/${proposal._id}`,
         {
           method: "PUT",
           headers: {

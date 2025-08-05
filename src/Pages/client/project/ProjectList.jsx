@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import axios from "axios";
 import ProjectModal from "./ViewProject";
+import { API_URL } from '../../../config';
+
 
 export default function ProjectsList() {
   const [projects, setProjects] = useState([]);
@@ -17,7 +19,7 @@ export default function ProjectsList() {
 
     try {
       const response = await axios.get(
-        `https://freelance-management-frontend.onrender.com/api/client/getallprojects/${clientId}`
+        `${API_URL}/api/client/getallprojects/${clientId}`
       );
       setProjects(response.data.data || []); // `data` is the actual array of projects
     } catch (error) {
@@ -31,7 +33,7 @@ export default function ProjectsList() {
   const handleDeleteProject = async (projectId) => {
     try {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/client/delete-project/${clientId}/${projectId}`,
+        `${API_URL}/api/client/delete-project/${clientId}/${projectId}`,
         {
           method: "DELETE",
         }

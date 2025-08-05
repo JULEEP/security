@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import { FaDownload } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { API_URL } from '../../../config';
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -15,7 +16,7 @@ const InvoiceList = () => {
           }
   
           const res = await fetch(
-            `https://freelance-management-frontend.onrender.com/api/freelancers/freelancerinvoices/${freelancerId}`
+            `${API_URL}/api/freelancers/freelancerinvoices/${freelancerId}`
           );
   
           const data = await res.json(); // parse response as JSON

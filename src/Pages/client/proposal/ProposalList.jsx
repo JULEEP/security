@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProposalModal from "./ViewProposal"; 
 import { FaEye } from "react-icons/fa";
+import { API_URL } from "../../../config";
 
 const ProposalList = () => {
   const [clientId, setClientId] = useState("");
@@ -18,7 +19,7 @@ const ProposalList = () => {
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `https://freelance-management-frontend.onrender.com/api/client/getallproposal/${clientId}`
+          `${API_URL}/api/client/getallproposal/${clientId}`
         );
         if (!response.ok) throw new Error("Failed to fetch proposals");
 
@@ -39,7 +40,7 @@ const ProposalList = () => {
   const handleStatusChange = async (proposalId, newStatus) => {
     try {
       const response = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/client/update-proposal/${clientId}/${proposalId}`,
+        `${API_URL}/api/client/update-proposal/${clientId}/${proposalId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

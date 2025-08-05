@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ProposalModal from "./AddProposal";
+import { API_URL } from "../../../config";
 
 export default function ClientList({ setIsClientModalOpen, handleAddProposal }) {
   const [clients, setClients] = useState([]);
@@ -9,7 +10,7 @@ export default function ClientList({ setIsClientModalOpen, handleAddProposal }) 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await fetch("https://freelance-management-frontend.onrender.com/api/client/getallclients");
+        const res = await fetch(`${API_URL}/api/client/getallclients`);
         const data = await res.json();
         setClients(data.clients || []);
       } catch (error) {

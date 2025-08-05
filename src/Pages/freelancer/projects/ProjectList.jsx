@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaPlus, FaTimes, FaEye } from "react-icons/fa";
 import axios from "axios";
 import UpdateProjectModal from "./UpdateProject";
+import { API_URL } from "../../../config";
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,7 +31,7 @@ const ProjectList = () => {
       if (!freelancerId) return;
 
       const response = await axios.get(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/allprojects/${freelancerId}`
+        `${API_URL}/api/freelancers/allprojects/${freelancerId}`
       );
 
       const transformed = response.data.map((proj) => ({
@@ -84,7 +85,7 @@ const ProjectList = () => {
   const handleDelete = async (proposalId) => {
     try {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
+        `${API_URL}/api/freelancers/deleteproposal/${freelancerId}/${proposalId}`,
         { method: "DELETE" }
       );
       const data = res.json();

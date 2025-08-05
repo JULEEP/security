@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from '../../../config';
+
 
 const ClientRegister = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +43,7 @@ const ClientRegister = () => {
 
     try {
       const response = await fetch(
-        "https://freelance-management-frontend.onrender.com/api/client/register",
+        `${API_URL}/api/client/register`,
         {
           method: "POST",
           headers: {

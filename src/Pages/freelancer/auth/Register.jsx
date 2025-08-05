@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../config';
 
 const Register = () => {
   const [formData,setFormData] = useState({
@@ -38,7 +39,7 @@ const Register = () => {
   setIsLoading(true);
 
   try {
-    const response = await fetch('https://freelance-management-frontend.onrender.com/api/freelancers/register', {
+    const response = await fetch(`${API_URL}/api/freelancers/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

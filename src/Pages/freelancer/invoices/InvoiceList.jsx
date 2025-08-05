@@ -3,6 +3,7 @@ import { FaPlus, FaTimes, FaDownload, FaEye } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import UpdateInvoiceModal from "./UpdateInvoice";
+import { API_URL } from "../../../config";
 
 const statusColors = {
   Paid: "bg-green-100 text-green-700",
@@ -23,7 +24,7 @@ const InvoiceList = () => {
         }
 
         const res = await fetch(
-          `https://freelance-management-frontend.onrender.com/api/freelancers/freelancerinvoices/${freelancerId}`
+          `${API_URL}/api/freelancers/freelancerinvoices/${freelancerId}`
         );
 
         const data = await res.json(); // parse response as JSON

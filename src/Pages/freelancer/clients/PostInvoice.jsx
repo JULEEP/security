@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
+import { API_URL } from "../../../config";
 
 export default function InvoicePage({client}) {
   const [isEditMode, setIsEditMode] = useState(true);
@@ -75,7 +76,7 @@ export default function InvoicePage({client}) {
 
     try {
       const response = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/createinvoice/${freelancerId}/${client._id}`,
+        `${API_URL}/api/freelancers/createinvoice/${freelancerId}/${client._id}`,
         {
           method: "POST",
           headers: {

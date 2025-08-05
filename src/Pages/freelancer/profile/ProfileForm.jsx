@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_URL } from "../../../config";
 
 const sections = [
   "Basic Info",
@@ -757,7 +758,7 @@ const ProfileForm = () => {
     async function fetchProfile() {
       try {
         const res = await fetch(
-          `https://freelance-management-frontend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
+          `${API_URL}/api/freelancers/singlefreelancer/${freelancerId}`
         );
         const data = await res.json();
         if (data.freelancer) {
@@ -806,7 +807,7 @@ const ProfileForm = () => {
 
     try {
       const res = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/updatefreelancers/${freelancerId}`,
+        `${API_URL}/api/freelancers/updatefreelancers/${freelancerId}`,
         {
           method: "PUT",
           headers: {
@@ -823,7 +824,7 @@ const ProfileForm = () => {
 
         // 🔁 Re-fetch updated data to update the form visually
         const updatedRes = await fetch(
-          `https://freelance-management-frontend.onrender.com/api/freelancers/singlefreelancer/${freelancerId}`
+          `${API_URL}/api/freelancers/singlefreelancer/${freelancerId}`
         );
         const updatedData = await updatedRes.json();
         if (updatedData.freelancer) {

@@ -6,6 +6,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from '../../../config';
 
 const ClientLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +34,7 @@ const ClientLogin = () => {
     setError("");
 
     try {
-      const response = await fetch("https://freelance-management-frontend.onrender.com/api/client/login", {
+      const response = await fetch(`${API_URL}/api/client/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

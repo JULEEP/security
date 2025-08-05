@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../../../config';
 
 export default function ProposalModal({
   setIsModalOpen,
@@ -101,7 +102,7 @@ export default function ProposalModal({
 
     try {
       const response = await fetch(
-        `https://freelance-management-frontend.onrender.com/api/freelancers/create-proposals/${freelancerId}`,
+        `${API_URL}/api/freelancers/create-proposals/${freelancerId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
