@@ -130,57 +130,67 @@ export default function ProposalsList() {
             </tr>
           </thead>
           <tbody>
-            {proposals.map((proposal, index) => (
-              <tr key={index} className="border-b text-center">
-                <td className="py-2 px-4">{proposal.title}</td>
-                <td className="py-2 px-4 border">{proposal.client.name}</td>
-                <td className="p-3 border">
-                  <span
-                    className={`px-3 py-1 text-sm font-medium rounded-full 
-      ${
-        proposal.status === "Accepted"
-          ? "bg-green-100 text-green-800"
-          : proposal.status === "In Progress"
-          ? "bg-yellow-100 text-yellow-800"
-          : proposal.status === "Pending"
-          ? "bg-red-100 text-red-800"
-          : "bg-gray-100 text-gray-800"
-      }`}
-                  >
-                    {proposal.status}
-                  </span>
-                </td>
-                <td className="py-2 px-4 border">{proposal.total}</td>
-                <td className="py-2 px-4 border">
-                  {proposal.timeline.start.split("T")[0]}
-                </td>
-                <td className="py-2 px-4 flex gap-3">
-                  <button
-                    className="text-blue-500 hover:text-blue-700"
-                    onClick={() => setViewProposal(proposal)}
-                  >
-                    <FaEye />
-                  </button>
-                  <button
-                    className="text-green-500 hover:text-green-700"
-                    onClick={() => {
-                      setSelectedProposal(proposal);
-                      setIsEditModalOpen(true);
-                    }}
-                  >
-                    <FaEdit />
-                  </button>
+  {Array.isArray(proposals) && proposals.length > 0 ? (
+    proposals.map((proposal, index) => (
+      <tr key={index} className="border-b text-center">
+        <td className="py-2 px-4">{proposal.title}</td>
+        <td className="py-2 px-4 border">{proposal.client?.name || "N/A"}</td>
+        <td className="p-3 border">
+          <span
+            className={`px-3 py-1 text-sm font-medium rounded-full 
+              ${
+                proposal.status === "Accepted"
+                  ? "bg-green-100 text-green-800"
+                  : proposal.status === "In Progress"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : proposal.status === "Pending"
+                  ? "bg-red-100 text-red-800"
+                  : "bg-gray-100 text-gray-800"
+              }`}
+          >
+            {proposal.status || "Unknown"}
+          </span>
+        </td>
+        <td className="py-2 px-4 border">{proposal.total || "-"}</td>
+        <td className="py-2 px-4 border">
+          {proposal.timeline?.start
+            ? proposal.timeline.start.split("T")[0]
+            : "N/A"}
+        </td>
+        <td className="py-2 px-4 flex gap-3">
+          <button
+            className="text-blue-500 hover:text-blue-700"
+            onClick={() => setViewProposal(proposal)}
+          >
+            <FaEye />
+          </button>
+          <button
+            className="text-green-500 hover:text-green-700"
+            onClick={() => {
+              setSelectedProposal(proposal);
+              setIsEditModalOpen(true);
+            }}
+          >
+            <FaEdit />
+          </button>
+          <button
+            onClick={() => handleDelete(proposal._id)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <FaTrash />
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="6" className="text-center py-4 text-gray-500">
+        No proposals found
+      </td>
+    </tr>
+  )}
+</tbody>
 
-                  <button
-                    onClick={() => handleDelete(proposal._id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
         </table>
       </div>
 

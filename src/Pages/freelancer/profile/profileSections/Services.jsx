@@ -1,37 +1,37 @@
 import { useState } from "react";
-const SkillsInput = ({ formData, setFormData }) => {
-  const [skill, setSkill] = useState("");
+const ServicesInput = ({ formData, setFormData }) => {
+  const [service, setService] = useState("");
 
-  const handleAddSkill = () => {
-    if (!skill.trim()) return;
-    if (!formData.skills.includes(skill.trim())) {
+  const handleAddService = () => {
+    if (!service.trim()) return;
+    if (!formData.services.includes(service.trim())) {
       setFormData((prev) => ({
         ...prev,
-        skills: [...prev.skills, skill.trim()],
+        services: [...prev.services, service.trim()],
       }));
     }
-    setSkill("");
+    setService("");
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleAddSkill();
+      handleAddService();
     }
   };
 
-  const handleRemoveSkill = (skillToRemove) => {
+  const handleRemoveService = (removeItem) => {
     setFormData((prev) => ({
       ...prev,
-      skills: prev.skills.filter((s) => s !== skillToRemove),
+      services: prev.services.filter((s) => s !== removeItem),
     }));
   };
 
   return (
     <div className="space-y-4">
-      {/* Skills list */}
+      {/* Service list */}
       <div className="flex flex-wrap gap-2">
-        {formData.skills.map((s, index) => (
+        {formData.services.map((s, index) => (
           <span
             key={index}
             className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
@@ -39,8 +39,8 @@ const SkillsInput = ({ formData, setFormData }) => {
             {s}
             <button
               type="button"
-              onClick={() => handleRemoveSkill(s)}
-              className="ml-2 text-blue-600 hover:text-red-600 font-bold"
+              onClick={() => handleRemoveService(s)}
+              className="ml-2 text-blue-600 hover:text-blue-700 font-bold"
             >
               ×
             </button>
@@ -48,19 +48,19 @@ const SkillsInput = ({ formData, setFormData }) => {
         ))}
       </div>
 
-      {/* Input + Add button (NO FORM) */}
+      {/* Input + Add button */}
       <div className="flex gap-2">
         <input
           type="text"
-          value={skill}
-          onChange={(e) => setSkill(e.target.value)}
+          value={service}
+          onChange={(e) => setService(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a skill and press Enter"
+          placeholder="Type a service and press Enter"
           className="w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button
           type="button"
-          onClick={handleAddSkill}
+          onClick={handleAddService}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
           Add
@@ -69,4 +69,5 @@ const SkillsInput = ({ formData, setFormData }) => {
     </div>
   );
 };
-export default SkillsInput;
+
+export default ServicesInput;
